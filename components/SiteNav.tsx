@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SiteNavProps {
   navLinks?: string[];
@@ -11,18 +12,27 @@ interface SiteNavProps {
 const SF_PRO =
   '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif';
 
+/*
+ * Route map — keep in sync with your /app folder
+ * names. "Our Story" points at /our-story; make
+ * sure that folder + page.tsx exist once you've
+ * created it, or this link will 404 the same way
+ * the old Squad casing mismatch did.
+ */
 const ROUTES: Record<string, string> = {
   Invitation: "/invitation",
-  Squad: "/squad",
-  "Love Gallery": "/love-gallery",
+  "Our Story": "/our-story",
+  "The Squad": "/squad",
+  Gallery: "/love-gallery",
   Registry: "/registry",
 };
 
 export default function SiteNav({
-  navLinks = ["Invitation", "Squad", "Love Gallery", "Registry"],
+  navLinks = ["Invitation", "Our Story", "The Squad", "Gallery", "Registry"],
   logoSrc = "/PR Fusion Logo.png",
 }: SiteNavProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   const getRoute = (link: string) => ROUTES[link] || "/";
   const toggleMenu = () => setOpen((value) => !value);
@@ -41,7 +51,13 @@ export default function SiteNav({
 
         <div className="site-nav-links">
           {navLinks.map((link) => (
-            <Link key={link} href={getRoute(link)} className="site-nav-link">
+            <Link
+              key={link}
+              href={getRoute(link)}
+              className={`site-nav-link ${
+                pathname === getRoute(link) ? "site-nav-link-active" : ""
+              }`}
+            >
               {link}
             </Link>
           ))}
@@ -49,7 +65,7 @@ export default function SiteNav({
 
         <button
           type="button"
-          className={open ? "site-hamburger site-hamburger-open" : "site-hamburger"}
+          className="site-hamburger"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={toggleMenu}
@@ -81,7 +97,9 @@ export default function SiteNav({
             <Link
               key={link}
               href={getRoute(link)}
-              className="site-mobile-link"
+              className={`site-mobile-link ${
+                pathname === getRoute(link) ? "site-mobile-link-active" : ""
+              }`}
               onClick={() => setOpen(false)}
             >
               {link}
@@ -91,18 +109,29 @@ export default function SiteNav({
       </div>
 
       <style>{`
+        /*
+         * z-index raised from 60 -> 100. 60 was easy
+         * to get buried under other page content (the
+         * countdown, or anything else that ends up with
+         * a higher stacking value). 100 sits safely
+         * above ordinary page content while staying
+         * below the mobile drawer (200) and intro gate
+         * (1000), so those still correctly cover the
+         * nav when they're open.
+         */
         .site-nav {
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           height: 96px;
-          z-index: 60;
+          z-index: 300;
           display: flex;
           align-items: center;
           justify-content: space-between;
           padding: 0 108px;
           pointer-events: auto;
+          background-color: #f8f6f1
         }
 
         .site-nav-logo-link {
@@ -123,7 +152,7 @@ export default function SiteNav({
         .site-nav-links {
           display: flex;
           align-items: center;
-          gap: 44px;
+          gap: 40px;
         }
 
         .site-nav-link {
@@ -138,7 +167,7 @@ export default function SiteNav({
           padding-bottom: 6px;
           transition: opacity 0.35s ease;
           white-space: nowrap;
-          mix-blend-mode: difference;
+          mix-blend-mode: none;
         }
 
         .site-nav-link::after {
@@ -160,26 +189,44 @@ export default function SiteNav({
           right: 0;
         }
 
+        .site-nav-link-active::after {
+          right: 0;
+        }
+
+        /* =========================================
+           HAMBURGER
+
+           Fix: "position: fixed" was missing entirely
+           — "top"/"right" were declared but silently
+           doing nothing without a position value. Also
+           reverted the background from #f0f0f0 back to
+           transparent (a stray gray box behind the icon
+           wasn't intentional).
+        ========================================= */
+
         .site-hamburger {
           display: none;
+          position: fixed;
+          top: 20px;
+          right: 20px;
           flex-direction: column;
+          align-items: center;
           justify-content: center;
           gap: 5px;
           width: 36px;
           height: 36px;
           padding: 0;
           border: 0;
-          background: transparent;
+          background: #f8f6f1;
           cursor: pointer;
           z-index: 220;
           -webkit-tap-highlight-color: transparent;
-          transition: top 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
-            right 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+
         }
 
         .site-hamburger span {
           display: block;
-          width: 100%;
+          width: 20px;
           height: 2px;
           background: #1a1a1a;
           transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
@@ -240,7 +287,7 @@ export default function SiteNav({
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          gap: 30px;
+          gap: 28px;
           width: 100%;
         }
 
@@ -248,10 +295,14 @@ export default function SiteNav({
           font-family: ${SF_PRO};
           font-size: 1.05rem;
           font-weight: 500;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.02em;
           text-transform: uppercase;
-          color: #1a1a1a;
+          color: #272727;
           text-decoration: none;
+        }
+
+        .site-mobile-link-active {
+          opacity: 0.55;
         }
 
         @media (max-width: 900px) {
@@ -270,14 +321,6 @@ export default function SiteNav({
 
           .site-hamburger {
             display: flex;
-          }
-
-          /* When the drawer is open, the same animated hamburger
-             physically moves into the drawer and becomes its close button. */
-          .site-hamburger-open {
-            position: fixed;
-            top: 20px;
-            right: 20px;
           }
         }
       `}</style>

@@ -55,11 +55,13 @@ function useIsMobile(breakpoint = 900) {
 interface SquadRowProps {
   label: string;
   total: number;
+  images: string[];
 }
 
-function SquadRow({ label, total }: SquadRowProps) {
+function SquadRow({ label, total, images }: SquadRowProps) {
   const isMobile = useIsMobile();
   const visibleCount = isMobile ? 1 : 4;
+  const gap = 14; // must match the CSS gap
 
   const [start, setStart] = useState(0);
 
@@ -72,10 +74,15 @@ function SquadRow({ label, total }: SquadRowProps) {
   const canGoLeft = start > 0;
   const canGoRight = start + visibleCount < total;
 
-  const visibleIndices = Array.from(
-    { length: total },
-    (_, index) => index
-  ).slice(start, start + visibleCount);
+  const goLeft = () => {
+    setStart((current) => Math.max(current - visibleCount, 0));
+  };
+
+  const goRight = () => {
+    setStart((current) =>
+      Math.min(current + visibleCount, Math.max(total - visibleCount, 0))
+    );
+  };
 
   return (
     <div className="squad-row">
@@ -88,11 +95,7 @@ function SquadRow({ label, total }: SquadRowProps) {
             className="squad-arrow"
             aria-label={`Previous ${label}`}
             disabled={!canGoLeft}
-            onClick={() =>
-              setStart((current) =>
-                Math.max(current - visibleCount, 0)
-              )
-            }
+            onClick={goLeft}
           >
             ‹
           </button>
@@ -102,24 +105,35 @@ function SquadRow({ label, total }: SquadRowProps) {
             className="squad-arrow"
             aria-label={`Next ${label}`}
             disabled={!canGoRight}
-            onClick={() =>
-              setStart((current) =>
-                Math.min(
-                  current + visibleCount,
-                  Math.max(total - visibleCount, 0)
-                )
-              )
-            }
+            onClick={goRight}
           >
             ›
           </button>
         </div>
       </div>
 
-      <div className="squad-row-grid">
-        {visibleIndices.map((index) => (
-          <div className="squad-photo" key={index} />
-        ))}
+      <div className="squad-row-viewport">
+        <div
+          className="squad-row-track"
+          style={{
+            transform: `translateX(-${(start / visibleCount) * 100}%)`,
+          }}
+        >
+          {Array.from({ length: total }, (_, index) => (
+            <div
+              className="squad-photo"
+              key={index}
+              style={{
+                flex: `0 0 calc((100% - ${(visibleCount - 1) * gap}px) / ${visibleCount})`,
+              }}
+            >
+              <img
+                src={images[index] || "/placeholder.jpg"}
+                alt={`${label} ${index + 1}`}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -134,7 +148,11 @@ export default function CurveGallery({
     "/gallery-5.jpg",
   ],
 
-  panelCount = 20,
+  /*
+   * 12 panels on ALL devices.
+   */
+  panelCount = 12,
+
   title = "PRAISE & REKs",
 
   radius = 1350,
@@ -144,16 +162,16 @@ export default function CurveGallery({
 
   frameWidth = "2560px",
 
-  perspective = 1900,
+  perspective = 1200,
 
-  gap = 7,
+  gap = 6,
 
   panelWidthScale = 0.97,
 
   edgeWidth = "70px",
   edgeBlur = 10,
 
-  navLinks = ["Invitation", "Squad", "Love Gallery", "Registry"],
+  navLinks = ["Invitation", "Our Story", "Squad", "Gallery", "Registry"],
 
   musicSrc = "/wedding-song.mp3",
 }: CurveGalleryProps) {
@@ -163,7 +181,7 @@ export default function CurveGallery({
   const audioRef = useRef<HTMLAudioElement>(null);
 
   /*
-   * Load Cinzel once.
+   * Load fonts once.
    */
   useEffect(() => {
     const id = "cg-fonts";
@@ -181,15 +199,51 @@ export default function CurveGallery({
   }, []);
 
   /*
-   * Lock page scrolling while the opening gate is closed.
+   * Preload the critical intro assets.
+   *
+   * These are small, above-the-fold assets and are needed
+   * immediately when the page opens.
    */
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
+    const preloadImage = (href: string) => {
+      if (document.querySelector(`link[rel="preload"][href="${href}"]`)) {
+        return;
+      }
 
-    document.body.style.overflow = introOpen ? "" : "hidden";
+      const link = document.createElement("link");
+
+      link.rel = "preload";
+      link.as = "image";
+      link.href = href;
+
+      document.head.appendChild(link);
+    };
+
+    preloadImage("/seal.png");
+    preloadImage("/White embross bg.jpg");
+  }, []);
+
+    /*
+   * Lock page scrolling while opening gate is closed.
+   */
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+
+    if (!introOpen) {
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+    } else {
+      html.style.overflow = "";
+      body.style.overflow = "";
+    }
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
     };
   }, [introOpen]);
 
@@ -207,7 +261,7 @@ export default function CurveGallery({
    * Wedding countdown
    */
   const weddingDate = new Date(
-    "2026-10-24T09:00:00"
+    "2026-10-24T10:00:00"
   ).getTime();
 
   const [timeLeft, setTimeLeft] = useState({
@@ -318,7 +372,7 @@ export default function CurveGallery({
           }
           aria-hidden={introOpen}
         >
-          {/* LEFT PANEL — ABOVE RIGHT PANEL */}
+          {/* LEFT PANEL */}
           <div className="cg-intro-panel cg-intro-left">
             <div className="cg-panel-ribbon cg-ribbon-left">
               <div className="cg-stripe stripe-gold" />
@@ -336,6 +390,8 @@ export default function CurveGallery({
                     src="/seal.png"
                     alt="Wedding seal"
                     className="cg-seal-image"
+                    fetchPriority="high"
+                    decoding="async"
                   />
                 </div>
               </div>
@@ -413,6 +469,12 @@ export default function CurveGallery({
                       alt=""
                       draggable={false}
                       className="cg-image"
+                      loading={
+                        index === 0
+                          ? "eager"
+                          : "lazy"
+                      }
+                      decoding="async"
                     />
 
                     <div className="cg-grain" />
@@ -425,8 +487,6 @@ export default function CurveGallery({
 
         {/* =====================================================
             HERO CTA
-
-            No arrow here.
         ===================================================== */}
 
         <Link
@@ -460,9 +520,10 @@ export default function CurveGallery({
           COUNTDOWN
       ======================================================= */}
 
-      <section
-        className="wc-countdown"
+            <section
+        className={`wc-countdown ${introOpen ? "wc-countdown-visible" : ""}`}
         aria-label="Countdown to the wedding"
+        aria-hidden={!introOpen}
       >
         <div
           className="wc-blob"
@@ -479,7 +540,7 @@ export default function CurveGallery({
           </span>
 
           <span className="wc-time">
-            9:00 AM
+            10:00 AM
           </span>
         </div>
 
@@ -536,29 +597,24 @@ export default function CurveGallery({
           <div className="site-section-top">
             <div className="site-section-heading">
               <span className="site-section-eyebrow">
-                Our Journey
+                Our story
               </span>
 
               <h2 className="site-section-title">
-                Our Story
+                How we found our way to forever
               </h2>
             </div>
 
             <div className="site-section-copy">
               <p className="site-section-body">
-                From a chance meeting to forever —
-                this is the short version of how we
-                got here. Replace this placeholder with
-                the real story: how you met, the
-                proposal, whatever you&apos;d like guests
-                to read before the big day.
+                Some love stories begin with a grand introduction. Ours began rather quietly with a church office, a few passing greetings, a camera, and, of all things, an Ecobank account.
               </p>
 
               <Link
-                href="/invitation"
+                href="/our-story"
                 className="site-section-cta"
               >
-                View the Invitation
+                Read our story
 
                 <span
                   className="cta-arrow"
@@ -570,6 +626,7 @@ export default function CurveGallery({
             </div>
           </div>
 
+          <div className="site-section-top site-section-top-with-line"></div>
           <div className="site-section-media">
             <div className="site-story-image" />
           </div>
@@ -588,32 +645,52 @@ export default function CurveGallery({
           <div className="site-section-top">
             <div className="site-section-heading">
               <span className="site-section-eyebrow">
-                The Wedding Party
+                The squad
               </span>
 
               <h2 className="site-section-title">
-                Squad
+                We're heavily backed up
               </h2>
             </div>
 
             <div className="site-section-copy">
               <p className="site-section-body">
-                The people standing with us on the day —
-                bridesmaids and groomsmen alike.
-              </p>
+                The people standing with us on the day — the ones who have laughed with us, prayed with us, and walked with us along the way.  </p>
             </div>
           </div>
 
+          <div className="site-section-top site-section-top-with-line"></div>
           <div className="site-section-media">
             <div className="squad-groups">
               <SquadRow
-                label="Bridesmaid"
+                label="Bridesmaids"
                 total={9}
+                images={[
+                  "/Flourish.png",
+                  "/Miracle.png",
+                  "/Lolia.png",
+                  "/Osione.png",
+                  "/Ofure.png",
+                  "/Offiong.png",
+                  "/Jophine.png",
+                  "/Favour.png",
+                  "/Bimbo.png",
+                ]}
               />
 
               <SquadRow
                 label="Groomsmen"
                 total={8}
+                images={[
+                  "/Miju.png",
+                  "/Maurice.png",
+                  "/Godspeed.png",
+                  "/Evaristus.png",
+                  "/Ghekpezi.png",
+                  "/Honour.png",
+                  "/Bassey.png",
+                  "/Goodness.png",
+                ]}
               />
             </div>
           </div>
@@ -765,16 +842,16 @@ export default function CurveGallery({
       ======================================================= */}
 
       <style>{`
-        /* =====================================================
-           OUTER / HERO
-        ===================================================== */
+
+        /* =========================================
+           OUTER
+        ========================================= */
 
         .cg-outer {
           position: relative;
 
           width: 100%;
           height: 100vh;
-          min-height: 680px;
 
           overflow: hidden;
 
@@ -782,38 +859,48 @@ export default function CurveGallery({
           align-items: center;
           justify-content: center;
 
-          background-color: #eeeeee;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-color: #e9e9e9;
         }
 
 
-        /* =====================================================
-           INTRO GATE
-        ===================================================== */
+        /* =========================================
+           INTRO
+
+           Fix (item 9): slower, gentler easing
+           shared identically by the panels AND the
+           seal (same duration, same curve) so they
+           read as one continuous, cinematic motion
+           instead of the seal racing ahead or
+           snapping into place.
+        ========================================= */
 
         .cg-intro {
           position: fixed;
           inset: 0;
 
-          z-index: 1000;
+          z-index: 1200;
 
-          overflow: visible;
+          overflow: hidden;
 
           pointer-events: none;
         }
 
         .cg-intro-panel {
-          --panel-texture: url("/White embross bg.jpg");
+
+          --panel-texture: url('/White embross bg.jpg');
 
           position: absolute;
-
           top: 0;
           bottom: 0;
-
-          width: 50vw;
+          width: 50%;
 
           background-image: var(--panel-texture);
           background-size: cover;
           background-repeat: no-repeat;
+          background-position: center;
           background-color: #141414;
 
           box-shadow:
@@ -821,106 +908,39 @@ export default function CurveGallery({
             inset -1px -1px 1px rgba(0, 0, 0, 0.25),
             0 8px 32px rgba(0, 0, 0, 0.25);
 
-          transition:
-            transform 3.8s cubic-bezier(0.22, 1, 0.36, 1);
+          transition: transform 3.8s cubic-bezier(0.22, 1, 0.36, 1);
 
           will-change: transform;
 
           pointer-events: auto;
         }
 
-
-        /*
-         * IMPORTANT:
-         *
-         * The left/seal panel is always above the right panel.
-         */
         .cg-intro-left {
-          left: 0vw;
-
-          z-index: 1002;
-
+          left: 0;
           transform-origin: left center;
-
           background-position: left center;
+          z-index: 1300;
         }
 
         .cg-intro-right {
-          right: 0vw;
-
-          z-index: 1001;
-
+          right: 0;
           transform-origin: right center;
-
           background-position: right center;
         }
 
-
-        /*
-         * CLOSED
-         */
-        .cg-intro-left,
-        .cg-intro-right {
-          transform: translateX(0);
+        .cg-intro-open .cg-intro-left {
+          transform:
+            perspective(1600px)
+            rotateY(-4deg)
+            translateX(calc(-100% + 65px));
         }
 
-
-        /*
- * OPEN
- *
- * The panels open far enough to clear the navigation,
- * while the seal remains partially visible at the edge.
- */
-.cg-intro-open .cg-intro-left {
-  transform:
-    perspective(1600px)
-    rotateY(-4deg)
-    translateX(calc(-0900px));
-}
-
-.cg-intro-open .cg-intro-right {
-  transform:
-    perspective(1600px)
-    rotateY(4deg)
-    translateX(calc(900px));
-}
-
-
-/*
- * Keep the seal visible after the left panel opens.
- *
- * The seal normally sits 65px outside the panel.
- * When the panel moves off-screen, this pulls the seal
- * back toward the viewport so roughly 1/4 remains visible.
- */
-.cg-intro-open .cg-intro-seal {
-  transform:
-    translateY(-50%)
-    translateX(40px);
-}
-
-
-/*
- * Once opened, the gate itself no longer intercepts
- * navigation clicks.
- */
-.cg-intro-open {
-  pointer-events: none;
-}
-
-.cg-intro-open .cg-intro-panel {
-  pointer-events: none;
-}
-
-
-/*
- * The seal itself should remain visible even though
- * the panel no longer accepts pointer events.
- */
-.cg-intro-open .cg-intro-seal {
-  pointer-events: none;
-  z-index: 1100;
-} 
+        .cg-intro-open .cg-intro-right {
+          transform:
+            perspective(1600px)
+            rotateY(4deg)
+            translateX(calc(100% - 65px));
+        }
 
 
         /* =====================================================
@@ -967,8 +987,18 @@ export default function CurveGallery({
         .cg-intro-seal {
           position: absolute;
 
+          /*
+           * The seal center is exactly aligned with the
+           * center of the 35px ribbon.
+           *
+           * 130px seal / 2 = 65px
+           * ribbon center = 17.5px
+           *
+           * Therefore:
+           * right = -(65 - 17.5) = -47.5px
+           */
           top: 50%;
-          right: -50px;
+          right: -47.5px;
 
           transform: translateY(-50%);
 
@@ -1012,7 +1042,32 @@ export default function CurveGallery({
 
           object-fit: contain;
 
+          display: block;
+
           transition: filter 0.5s ease;
+        }
+
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT move the seal when the panels open.
+         * Because it is positioned relative to the left panel,
+         * it naturally moves with the ribbon and remains
+         * perfectly centered on it.
+         */
+        .cg-intro-open .cg-intro-seal {
+          transform: translateY(-50%);
+
+          /*
+           * Keep the active seal above the intro panels.
+           */
+          z-index: 1300;
+
+          /*
+           * Once opened, the seal should no longer block
+           * interaction with the page underneath.
+           */
+          pointer-events: none;
         }
 
         .cg-intro-open .cg-seal-image {
@@ -1023,10 +1078,6 @@ export default function CurveGallery({
             drop-shadow(
               -2px 0 0 rgba(0, 229, 255, 0.55)
             );
-        }
-
-        .cg-intro-open .cg-intro-seal {
-          pointer-events: none;
         }
 
 
@@ -1056,7 +1107,7 @@ export default function CurveGallery({
           font-family: "Cinzel", serif;
 
           font-size:
-            clamp(2.6rem, 6.8vw, 6rem);
+            clamp(2.6rem, 6.8vw, 5rem);
 
           line-height: 1;
 
@@ -1094,7 +1145,7 @@ export default function CurveGallery({
         .cg-frame {
           position: absolute;
 
-          top: 400px;
+          top: 350px;
           left: 50%;
 
           transform: translateX(-50%);
@@ -1238,7 +1289,7 @@ export default function CurveGallery({
 
           padding: 20px 30px;
 
-          font-family: ${SF_PRO};
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
           font-size: 0.7rem;
 
@@ -1449,7 +1500,22 @@ export default function CurveGallery({
 
           overflow: hidden;
 
-          z-index: 35;
+          z-index: 0;
+        }
+
+                .wc-countdown {
+          position: relative;
+          z-index: 10;               /* well below seal (1200/1300) */
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .wc-countdown-visible {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
         }
 
         .wc-blob {
@@ -1478,7 +1544,7 @@ export default function CurveGallery({
         .wc-top-row {
           position: relative;
 
-          z-index: 1;
+          z-index: 0;
 
           display: flex;
 
@@ -1512,7 +1578,7 @@ export default function CurveGallery({
         .wc-numbers {
           position: relative;
 
-          z-index: 1;
+          z-index: 0;
 
           display: flex;
 
@@ -1595,15 +1661,6 @@ export default function CurveGallery({
           margin: 0 auto;
         }
 
-
-        /*
-         * The heading and body relationship is deliberately
-         * consistent across the standard sections.
-         *
-         * The copy starts at the same vertical relationship
-         * from the heading rather than each section choosing
-         * its own arbitrary value.
-         */
         .site-section-top {
           display: flex;
 
@@ -1615,6 +1672,18 @@ export default function CurveGallery({
 
           margin-bottom: 56px;
         }
+
+        /* The line sits under the text block only */
+.site-section-top-with-line {
+  margin-bottom: 0;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #550303;
+}
+
+/* Space between the line and the images */
+.site-section-top-with-line + .site-section-media {
+  margin-top: 40px;
+}
 
         .site-section-heading {
           flex: 0 0 360px;
@@ -1641,7 +1710,7 @@ export default function CurveGallery({
         .site-section-eyebrow {
           display: block;
 
-          font-family: ${SF_PRO};
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
           font-size: 0.75rem;
 
@@ -1649,7 +1718,7 @@ export default function CurveGallery({
 
           text-transform: uppercase;
 
-          color: #b79b6b;
+          color: #550303;
 
           margin-bottom: 16px;
         }
@@ -1666,7 +1735,7 @@ export default function CurveGallery({
 
           font-weight: 600;
 
-          letter-spacing: 0.04em;
+          letter-spacing: 0.00em;
 
           color: #1a1a1a;
 
@@ -1676,7 +1745,7 @@ export default function CurveGallery({
         .site-section-body {
           max-width: 480px;
 
-          font-family: ${SF_PRO};
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
           font-size: 1rem;
 
@@ -1692,7 +1761,7 @@ export default function CurveGallery({
           padding:
             14px 30px;
 
-          font-family: ${SF_PRO};
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
           font-size: 0.75rem;
 
@@ -1747,130 +1816,117 @@ export default function CurveGallery({
            STORY IMAGE
         ===================================================== */
 
-        .site-story-image {
+                .site-story-image {
           width: 100%;
-
           aspect-ratio: 16 / 7;
-
           background: #ddd;
-
+          background-image: url('/story-image.jpg');
+          background-size: cover;
+          background-position: center;
           border-radius: 16px;
         }
 
 
-        /* =====================================================
-           SQUAD
-        ===================================================== */
+       /* =====================================================
+   SQUAD
+===================================================== */
 
-        .squad-groups {
-          display: flex;
+.squad-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
 
-          flex-direction: column;
+  
+}
 
-          gap: 48px;
-        }
+.squad-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+  
 
-        .squad-row-header {
-          display: flex;
+.squad-row-title {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  margin: 0;
+  
+}
 
-          align-items: center;
+.squad-row-nav {
+  display: flex;
+  gap: 10px;
+  
+}
 
-          justify-content: space-between;
+.squad-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #550303;
+  background: transparent;
+  color: #550303;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, color 0.25s ease;
+}
 
-          margin-bottom: 18px;
-        }
+.squad-arrow:hover:not(:disabled) {
+  background: #550303;
+  color: #fff;
+}
 
-        .squad-row-title {
-          font-family: ${SF_PRO};
+.squad-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
 
-          font-size: 1.05rem;
+  
 
-          font-weight: 600;
+/* ===== NEW SLIDING CAROUSEL ===== */
 
-          letter-spacing: 0.01em;
+.squad-row-viewport {
+  overflow: hidden;
+  width: 100%;
+}
 
-          text-transform: uppercase;
+.squad-row-track {
+  display: flex;
+  gap: 14px;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
 
-          color: #1a1a1a;
+.squad-photo {
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #e2ded7;
+  flex-shrink: 0;
+}
 
-          margin: 0;
-        }
+.squad-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-        .squad-row-nav {
-          display: flex;
-
-          gap: 10px;
-        }
-
-        .squad-arrow {
-          width: 36px;
-          height: 36px;
-
-          border-radius: 50%;
-
-          border:
-            1px solid #550303;
-
-          background: transparent;
-
-          color: #550303;
-
-          font-size: 1.1rem;
-
-          line-height: 1;
-
-          cursor: pointer;
-
-          display: flex;
-
-          align-items: center;
-          justify-content: center;
-
-          transition:
-            background 0.25s ease,
-            color 0.25s ease;
-        }
-
-        .squad-arrow:hover:not(:disabled) {
-          background: #550303;
-
-          color: #fff;
-        }
-
-        .squad-arrow:disabled {
-          opacity: 0.3;
-
-          cursor: not-allowed;
-        }
-
-        .squad-row-grid {
-          display: grid;
-
-          grid-template-columns:
-            repeat(4, 1fr);
-
-          gap: 14px;
-        }
-
-        .squad-photo {
-          aspect-ratio: 3 / 4;
-
-          background: #e2ded7;
-
-          border:
-            1px dashed #cfc6bc;
-
-          border-radius: 16px;
-        }
 
 
         /* =====================================================
            LOVE GALLERY
         ===================================================== */
 
-        /*
-         * This section intentionally has its own header layout.
-         */
         .wall-section-top {
           display: flex;
 
@@ -1885,7 +1941,7 @@ export default function CurveGallery({
           padding-bottom: 28px;
 
           border-bottom:
-            1px solid #e0d5c0;
+            1px solid #550303;
         }
 
         .wall-title {
@@ -1922,22 +1978,17 @@ export default function CurveGallery({
 
           flex-shrink: 0;
 
-          /*
-           * Same header-to-body relationship as the
-           * other sections, while preserving the gallery
-           * section's own layout.
-           */
           padding-bottom: 0;
         }
 
         .wall-tagline {
-          font-family: ${SF_PRO};
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
           font-size: 0.92rem;
 
           line-height: 1.6;
 
-          color: #6b5b4a;
+          color: #550303;
 
           margin: 0 0 14px;
         }
@@ -2042,7 +2093,7 @@ export default function CurveGallery({
 
           color: #ffffff;
 
-          font-family: ${SF_PRO};
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
           font-size: 0.7rem;
 
@@ -2089,17 +2140,17 @@ export default function CurveGallery({
 
         @media (max-width: 1100px) {
           .cg-title {
-            top: 88px;
+            top: 200px;
           }
 
           .cg-frame {
-            top: 150px;
+            top: 300px;
 
-            height: 420px;
+            height: 2000px;
           }
 
           .cg-cylinder {
-            top: -390px;
+            top: -420px;
           }
 
           .site-section {
@@ -2114,59 +2165,49 @@ export default function CurveGallery({
         ===================================================== */
 
         @media (max-width: 900px) {
+
           .cg-outer {
             min-height: 620px;
+
+            /*
+             * Prevent unnecessary GPU compositing outside
+             * the visible hero area.
+             */
+          }
+
+                    .site-story-image {
+            aspect-ratio: 4 / 5;
+            min-height: 320px;
+          }
+
+          .site-section-top-with-line {
+  padding-bottom: 24px;
+}
+
+.site-section-top-with-line + .site-section-media {
+  margin-top: 32px;
+}
+
+
+          /* =================================================
+             MOBILE INTRO
+          ================================================= */
+
+          .cg-intro-panel {
+            /*
+             * Smaller texture rendering workload.
+             */
+            background-size: auto 100%;
+
+            box-shadow:
+              inset 1px 1px 1px rgba(255, 255, 255, 0.3),
+              inset -1px -1px 1px rgba(0, 0, 0, 0.2);
           }
 
 
           /*
-           * Title is moved upward while leaving enough
-           * breathing room beneath the navigation.
-           */
-          .cg-title {
-            top: 74px;
-
-            font-size:
-              clamp(
-                1.9rem,
-                8.5vw,
-                2.8rem
-              );
-
-            white-space: normal;
-
-            line-height: 1.15;
-
-            padding:
-              0 20px;
-
-            width: 100%;
-          }
-
-
-          /*
-           * Cylinder moved upward so its lower edge doesn't
-           * compete visually with the countdown.
-           */
-          .cg-frame {
-            top: 145px;
-
-            height: 350px;
-
-            width: 100% !important;
-          }
-
-          .cg-cylinder {
-            top: -335px;
-          }
-
-
-          /*
-           * Mobile opening distance.
-           *
-           * 118px seal with 59px extending beyond the panel.
-           * The additional 88px travel leaves approximately
-           * 1/4 of the seal visible.
+           * Open panels farther on mobile so navigation is
+           * completely accessible.
            */
           .cg-intro-open .cg-intro-left {
             transform:
@@ -2183,37 +2224,208 @@ export default function CurveGallery({
           }
 
 
+          /*
+           * Mobile seal.
+           *
+           * 118px / 2 = 59px.
+           * Ribbon = 35px wide.
+           * Ribbon center = 17.5px.
+           *
+           * 59 - 17.5 = 41.5px.
+           *
+           * This places the center of the seal directly
+           * over the center of the ribbon.
+           */
           .cg-intro-seal {
             width: 118px;
             height: 118px;
 
-            right: -59px;
+            right: -41.5px;
           }
 
 
           /*
-           * Keep the animation transform independent from
-           * the cylinder's vertical positioning.
+           * DO NOT translate the seal independently when
+           * opening. It remains locked to the ribbon.
            */
-          @keyframes cg-spin {
+          .cg-intro-open .cg-intro-seal {
+            transform: translateY(-50%);
+
+            /*
+             * Keep active seal above everything else.
+             */
+            z-index: 1300;
+
+            /*
+             * Do not let the opened seal intercept clicks.
+             */
+            pointer-events: none;
+          }
+
+
+          /* =================================================
+             MOBILE TITLE
+          ================================================= */
+
+          .cg-title {
+            top: 120px;
+
+            font-size:
+              clamp(
+                3.6rem,
+                8vw,
+                3.6rem
+              );
+
+            white-space: normal;
+
+            line-height: 1.15;
+
+            padding:
+              0 20px;
+
+            width: 100%;
+          }
+
+
+          /* =================================================
+             MOBILE CYLINDER
+          ================================================= */
+
+          .cg-frame {
+            /*
+             * Move the wedding invitation/cylinder upward.
+             */
+            top: 250px;
+
+            height: 480px;
+
+            width: 100% !important;
+
+            /*
+             * Keep only the required compositing layer.
+             */
+            transform:
+              translateX(-50%);
+          }
+
+          .cg-cylinder {
+            /*
+             * Smaller cylinder means less 3D work while
+             * retaining the same 12-panel structure.
+             */
+            top: -315px;
+
+            /*
+             * Reduce the visual 3D workload on mobile.
+             * The animation remains fully active.
+             */
+            transform-origin: center center;
+
+            animation:
+              cg-spin-mobile linear infinite;
+
+            will-change: transform;
+          }
+
+          /*
+           * Mobile animation uses a smaller 3D scale.
+           * 12 panels are still rendered.
+           */
+          @keyframes cg-spin-mobile {
             from {
               transform:
-                scale(0.58)
+                scale(0.52)
                 rotateY(0deg);
             }
 
             to {
               transform:
-                scale(0.58)
+                scale(0.52)
                 rotateY(360deg);
             }
           }
 
+          /*
+           * Keep panel compositing as lightweight as possible.
+           */
+          .cg-panel {
+            border-radius: 12px;
 
-          /* HERO CTA */
+            backface-visibility: hidden;
+
+            transform-style: preserve-3d;
+          }
+
+          .cg-image {
+            /*
+             * Avoid unnecessary filtering/resampling work.
+             */
+            backface-visibility: hidden;
+          }
+
+
+          /* =================================================
+             MOBILE GRAIN
+          ================================================= */
+
+          /*
+           * IMPORTANT:
+           *
+           * Do not run feTurbulence animation on mobile.
+           *
+           * Instead we use a small static raster-like
+           * repeating texture. This keeps the visual grain
+           * without forcing the browser to continuously
+           * calculate procedural SVG noise.
+           */
+          .cg-grain {
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background-image:
+              radial-gradient(
+                rgba(255, 255, 255, 0.16) 0.7px,
+                transparent 0.8px
+              ),
+              radial-gradient(
+                rgba(0, 0, 0, 0.12) 0.7px,
+                transparent 0.8px
+              );
+
+            background-size:
+              5px 5px,
+              7px 7px;
+
+            background-position:
+              0 0,
+              2px 3px;
+
+            opacity: 0.13;
+
+            mix-blend-mode: overlay;
+
+            /*
+             * Explicitly disable the expensive animation.
+             */
+            animation: none;
+
+            /*
+             * Prevent this overlay from becoming an additional
+             * large compositing layer.
+             */
+            transform: none;
+          }
+
+
+          /* =================================================
+             MOBILE HERO CTA
+          ================================================= */
 
           .cg-invite-btn {
-            bottom: 72px;
+            bottom: 220px;
 
             padding:
               13px 22px;
@@ -2222,9 +2434,16 @@ export default function CurveGallery({
           }
 
 
-          /* COUNTDOWN */
+          /* =================================================
+             MOBILE COUNTDOWN
+          ================================================= */
 
           .wc-countdown {
+            /*
+             * Pull countdown upward slightly.
+             */
+            margin-top: -160px;
+
             width:
               calc(100% - 32px);
 
@@ -2264,7 +2483,9 @@ export default function CurveGallery({
           }
 
 
-          /* GENERAL SECTIONS */
+          /* =================================================
+             GENERAL SECTIONS
+          ================================================= */
 
           .site-section {
             padding:
@@ -2279,11 +2500,6 @@ export default function CurveGallery({
             margin-bottom: 40px;
           }
 
-
-          /*
-           * Same heading → body spacing across all standard
-           * sections on mobile.
-           */
           .site-section-copy {
             padding-top: 24px;
           }
@@ -2295,15 +2511,9 @@ export default function CurveGallery({
           }
 
 
-          /* SQUAD */
-
-          .squad-row-grid {
-            grid-template-columns:
-              repeat(1, 1fr);
-          }
-
-
-          /* LOVE GALLERY */
+          /* =================================================
+             LOVE GALLERY
+          ================================================= */
 
           .wall-section-top {
             flex-direction: column;
@@ -2371,38 +2581,87 @@ export default function CurveGallery({
         ===================================================== */
 
         @media (max-width: 420px) {
+
           .cg-outer {
             min-height: 590px;
           }
 
           .cg-title {
-            top: 62px;
+            top: 120px;
 
             font-size:
               clamp(
-                1.6rem,
+                3.2rem,
                 9vw,
-                2.2rem
+                2.0rem
               );
           }
 
-          .cg-frame {
-            top: 130px;
 
-            height: 320px;
+          /* Move cylinder upward further on small phones. */
+          .cg-frame {
+            top: 150px;
+
+            height: 520px;
           }
 
           .cg-cylinder {
-            top: -310px;
+            top: -290px;
           }
 
 
           /*
-           * 118px seal.
-           *
-           * Additional travel leaves roughly 1/4 of it
-           * visible at the edge.
+           * Same 12-panel cylinder, slightly smaller GPU load.
            */
+          @keyframes cg-spin-mobile {
+            from {
+              transform:
+                scale(0.47)
+                rotateY(0deg);
+            }
+
+            to {
+              transform:
+                scale(0.47)
+                rotateY(360deg);
+            }
+          }
+
+
+          /* =================================================
+             SMALL PHONE SEAL
+          ================================================= */
+
+          /*
+           * The seal stays mathematically centered on the
+           * 35px ribbon.
+           */
+          .cg-intro-seal {
+            width: 108px;
+            height: 108px;
+
+            right: -37.5px;
+          }
+
+          .cg-intro-open .cg-intro-seal {
+            transform: translateY(-50%);
+
+            /*
+             * Keep active seal above everything else.
+             */
+            z-index: 1300;
+
+            /*
+             * Do not let the opened seal intercept clicks.
+             */
+            pointer-events: none;
+          }
+
+
+          /* =================================================
+             SMALL PHONE PANELS
+          ================================================= */
+
           .cg-intro-open .cg-intro-left {
             transform:
               perspective(1100px)
@@ -2418,23 +2677,16 @@ export default function CurveGallery({
           }
 
 
-          @keyframes cg-spin {
-            from {
-              transform:
-                scale(0.50)
-                rotateY(0deg);
-            }
+          /* =================================================
+             SMALL PHONE COUNTDOWN
+          ================================================= */
 
-            to {
-              transform:
-                scale(0.50)
-                rotateY(360deg);
-            }
+          .wc-countdown {
+            margin-top: -150px;
           }
 
-
           .wc-top-row {
-            justify-content: flex-start;
+            flex-wrap: wrap;
           }
 
           .wc-numbers {
@@ -2457,6 +2709,22 @@ export default function CurveGallery({
 
           .wc-line {
             height: 32px;
+          }
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+          .cg-cylinder,
+          .cg-grain {
+            animation: none !important;
+          }
+
+          .cg-intro-panel {
+            transition: none;
           }
         }
       `}</style>
