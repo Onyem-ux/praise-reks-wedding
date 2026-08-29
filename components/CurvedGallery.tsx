@@ -64,25 +64,44 @@ function SquadRow({ label, total, images }: SquadRowProps) {
   const visibleCount = isMobile ? 1 : 4;
   const gap = 14; // must match the CSS gap
 
-  const [start, setStart] = useState(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setStart((current) =>
-      Math.min(current, Math.max(total - visibleCount, 0))
-    );
-  }, [visibleCount, total]);
+  const [canGoLeft, setCanGoLeft] = useState(false);
+  const [canGoRight, setCanGoRight] = useState(total > visibleCount);
 
-  const canGoLeft = start > 0;
-  const canGoRight = start + visibleCount < total;
+  /*
+   * Reads the viewport's actual scroll position instead of
+   * tracking an index in JS. This is what keeps the arrows,
+   * the images, and the true scroll position from ever
+   * drifting out of sync with each other — the browser's
+   * native scrollLeft/scrollWidth are always the source of
+   * truth, so there's no percentage/pixel math to get wrong.
+   */
+  const updateArrows = () => {
+    const el = viewportRef.current;
 
-  const goLeft = () => {
-    setStart((current) => Math.max(current - visibleCount, 0));
+    if (!el) return;
+
+    const maxScroll = el.scrollWidth - el.clientWidth;
+
+    setCanGoLeft(el.scrollLeft > 4);
+    setCanGoRight(el.scrollLeft < maxScroll - 4);
   };
 
-  const goRight = () => {
-    setStart((current) =>
-      Math.min(current + visibleCount, Math.max(total - visibleCount, 0))
-    );
+  useEffect(() => {
+    updateArrows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleCount, total]);
+
+  const scrollByPage = (direction: 1 | -1) => {
+    const el = viewportRef.current;
+
+    if (!el) return;
+
+    el.scrollBy({
+      left: direction * el.clientWidth,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -96,7 +115,7 @@ function SquadRow({ label, total, images }: SquadRowProps) {
             className="squad-arrow"
             aria-label={`Previous ${label}`}
             disabled={!canGoLeft}
-            onClick={goLeft}
+            onClick={() => scrollByPage(-1)}
           >
             ‹
           </button>
@@ -106,20 +125,27 @@ function SquadRow({ label, total, images }: SquadRowProps) {
             className="squad-arrow"
             aria-label={`Next ${label}`}
             disabled={!canGoRight}
-            onClick={goRight}
+            onClick={() => scrollByPage(1)}
           >
             ›
           </button>
         </div>
       </div>
 
-      <div className="squad-row-viewport">
-        <div
-          className="squad-row-track"
-          style={{
-            transform: `translateX(-${(start / visibleCount) * 100}%)`,
-          }}
-        >
+      {/*
+        Native horizontal scroll + scroll-snap. This replaces
+        the old JS transform carousel: the browser handles
+        positioning, so slides can never drift out of
+        alignment, the last image always comes fully into
+        view, and the row is swipeable/manually scrollable on
+        touch devices and trackpads without any extra code.
+      */}
+      <div
+        className="squad-row-viewport"
+        ref={viewportRef}
+        onScroll={updateArrows}
+      >
+        <div className="squad-row-track">
           {Array.from({ length: total }, (_, index) => (
             <div
               className="squad-photo"
@@ -431,6 +457,17 @@ export default function CurveGallery({
                 </div>
               </div>
             </button>
+
+            <span
+              className={
+                introOpen
+                  ? "cg-intro-hint cg-intro-hint-hidden"
+                  : "cg-intro-hint"
+              }
+              aria-hidden={introOpen}
+            >
+              Click on the seal to open invitation
+            </span>
           </div>
 
           {/* RIGHT PANEL */}
@@ -1121,6 +1158,82 @@ export default function CurveGallery({
             drop-shadow(
               -2px 0 0 rgba(0, 229, 255, 0.55)
             );
+        }
+
+
+        /* =====================================================
+           SEAL HINT TEXT
+
+           Sits below the seal, centered on the same ribbon
+           axis. Uses "right: 17.5px" + "translateX(50%)"
+           instead of mirroring the seal's own right offset,
+           since 17.5px is the ribbon's center distance from
+           the panel edge regardless of screen size — this
+           keeps the hint aligned with the seal at every
+           breakpoint without duplicating values.
+
+           The glow is a STATIC text-shadow (never animated)
+           to avoid the repaint/jank issues that animating
+           shadow blur can cause on iOS Safari. Only opacity
+           and transform (scale) are animated for the pulse,
+           since those are cheap, GPU-friendly properties.
+        ===================================================== */
+
+        .cg-intro-hint {
+          position: absolute;
+
+          top: calc(50% + 85px);
+          right: 17.5px;
+
+          transform: translateX(50%);
+
+          z-index: 1150;
+
+          width: max-content;
+          max-width: 200px;
+
+          text-align: center;
+
+          font-family: cinzel, serif;
+
+          font-size: 1.5rem;
+
+          font-weight: 600;
+
+          letter-spacing: 0.09em;
+
+          text-transform: uppercase;
+
+          color: #a33418;
+
+          text-shadow:
+    -0.4px -0.6px 0 #ffffff;
+    
+          pointer-events: none;
+
+          opacity: 1;
+
+          animation: cg-hint-pulse 2.2s ease-in-out infinite;
+
+          transition: opacity 0.4s ease;
+        }
+
+        .cg-intro-hint-hidden {
+          opacity: 0;
+
+          animation: none;
+        }
+
+        @keyframes cg-hint-pulse {
+          0%, 100% {
+            opacity: 0.6;
+            transform: translateX(50%) scale(1);
+          }
+
+          50% {
+            opacity: 1;
+            transform: translateX(50%) scale(1.06);
+          }
         }
 
 
@@ -1938,15 +2051,27 @@ export default function CurveGallery({
 /* ===== NEW SLIDING CAROUSEL ===== */
 
 .squad-row-viewport {
-  overflow: hidden;
   width: 100%;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide the scrollbar (Firefox) while keeping it scrollable */
+  scrollbar-width: none;
+}
+
+/* Hide the scrollbar (WebKit/Blink/Safari) */
+.squad-row-viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .squad-row-track {
   display: flex;
   gap: 14px;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
 }
 
 /*
@@ -1962,6 +2087,9 @@ export default function CurveGallery({
   overflow: hidden;
   background: #e2ded7;
   flex-shrink: 0;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .squad-photo img {
@@ -2326,6 +2454,14 @@ export default function CurveGallery({
             pointer-events: none;
           }
 
+          .cg-intro-hint {
+            top: calc(50% + 77px);
+
+            font-size: 0.64rem;
+
+            max-width: 170px;
+          }
+
 
           /* =================================================
              MOBILE TITLE
@@ -2685,6 +2821,14 @@ export default function CurveGallery({
             pointer-events: none;
           }
 
+          .cg-intro-hint {
+            top: calc(50% + 70px);
+
+            font-size: 0.6rem;
+
+            max-width: 150px;
+          }
+
 
           /* =================================================
              SMALL PHONE PANELS
@@ -2753,6 +2897,10 @@ export default function CurveGallery({
 
           .cg-intro-panel {
             transition: none;
+          }
+
+          .cg-intro-hint {
+            animation: none;
           }
         }
       `}</style>

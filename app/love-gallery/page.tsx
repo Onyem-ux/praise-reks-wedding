@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 
@@ -110,1120 +110,1274 @@ const galleryImages = [
 ];
 
 export default function LoveGalleryPage() {
-return ( <main className="gallery-page"> <SiteNav />
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
-```
-  {/* =====================================================
-      PAGE HEADER
-  ===================================================== */}
+  return (
+    <main className="gallery-page">
+      <SiteNav />
 
-  <section className="gallery-header">
-    <div className="gallery-header-inner">
+      {/* =====================================================
+          PAGE HEADER
+      ===================================================== */}
 
-      <div className="gallery-heading">
+      <section className="gallery-header">
+        <div className="gallery-header-inner">
 
-  <h1 className="gallery-title">
-    Our love, in pictures
-  </h1>
+          <div className="gallery-heading">
 
-  <p className="gallery-intro-copy">
-    Welcome to our gallery. Let's take through the journey from how it started, and show you how it's going!
-  </p>
+      <h1 className="gallery-title">
+        Our love, in pictures
+      </h1>
 
-</div>
-
-<div className="gallery-intro">
-
-<div className="gallery-header-image">
-  <img
-    src="/gallery/12(1).jpg"
-    alt="Praise and Reks"
-  />
-</div>
-
-</div>
+      <p className="gallery-intro-copy">
+        Welcome to our gallery. Let's take through the journey from how it started, and show you how it's going!
+      </p>
 
     </div>
 
-    <div className="gallery-header-line" />
-  </section>
+    <div className="gallery-intro">
 
+    <div className="gallery-header-image">
+      <img
+        src="/gallery/12(1).jpg"
+        alt="Praise and Reks"
+      />
+    </div>
 
-  {/* =====================================================
-      GALLERY WALL
-  ===================================================== */}
-
-  <section className="gallery-wall">
-
-    <div className="gallery-wall-inner">
-
-      {/* =================================================
-          LEFT EDITORIAL
-
-          This is deliberately separated from the
-          gallery grid so sticky positioning works
-          reliably.
-      ================================================= */}
-
-      <aside className="gallery-editorial">
-
-        <div className="gallery-editorial-sticky">
-
-          <span className="gallery-wall-eyebrow">
-            our Wall
-          </span>
-
-          <h2 className="gallery-wall-title">
-            "A picture is worth a thousand words", so we're saying 28,000
-            <br />
-
-          
-          </h2>
+    </div>
 
         </div>
 
-      </aside>
+        <div className="gallery-header-line" />
+      </section>
 
 
-      {/* =================================================
-          RIGHT BENTO GALLERY
-      ================================================= */}
+      {/* =====================================================
+          GALLERY WALL
+      ===================================================== */}
 
-      <div className="gallery-bento">
+      <section className="gallery-wall">
 
-        {galleryImages.map((image, index) => (
+        <div className="gallery-wall-inner">
 
-          <div
-            key={`${image}-${index}`}
-            className="gallery-item"
-          >
+          {/* =================================================
+              LEFT EDITORIAL
 
-            <img
-              src={image}
-              alt={`Praise and Reks — Frame ${index + 1}`}
-              className="gallery-image"
-              draggable={false}
-            />
+              This is deliberately separated from the
+              gallery grid so sticky positioning works
+              reliably.
+          ================================================= */}
 
-            <span className="gallery-caption">
-              {String(index + 1).padStart(2, "0")}
-            </span>
+          <aside className="gallery-editorial">
+
+            <div className="gallery-editorial-sticky">
+
+              <span className="gallery-wall-eyebrow">
+                our Wall
+              </span>
+
+              <h2 className="gallery-wall-title">
+                "A picture is worth a thousand words", so we're saying 28,000
+                <br />
+
+              
+              </h2>
+
+            </div>
+
+          </aside>
+
+
+          {/* =================================================
+              RIGHT BENTO GALLERY
+          ================================================= */}
+
+          <div className="gallery-bento">
+
+            {galleryImages.map((image, index) => (
+
+              <div
+                key={`${image}-${index}`}
+                className="gallery-item"
+                onClick={() => setExpandedImage(image)}
+                role="button"
+                tabIndex={0}
+                aria-label={`Expand frame ${index + 1}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setExpandedImage(image);
+                  }
+                }}
+              >
+
+                <img
+                  src={image}
+                  alt={`Praise and Reks — Frame ${index + 1}`}
+                  className="gallery-image"
+                  draggable={false}
+                />
+
+                <span className="gallery-caption">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+              </div>
+
+            ))}
 
           </div>
 
-        ))}
+        </div>
 
-      </div>
+      </section>
 
-    </div>
+      {/* =====================================================
+          LIGHTBOX / EXPANDED IMAGE VIEW
+      ===================================================== */}
 
-  </section>
+      {expandedImage && (
+        <div
+          className="gallery-lightbox"
+          onClick={() => setExpandedImage(null)}
+        >
+          <button
+            type="button"
+            className="gallery-lightbox-close"
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpandedImage(null);
+            }}
+            aria-label="Close expanded image"
+          >
+            &times;
+          </button>
+
+          <img
+            src={expandedImage}
+            alt="Expanded view"
+            className="gallery-lightbox-image"
+            onClick={(e) => e.stopPropagation()}
+            draggable={false}
+          />
+        </div>
+      )}
 
 
-  {/* =====================================================
-      STYLES
-  ===================================================== */}
+      {/* =====================================================
+          STYLES
+      ===================================================== */}
 
-  <style>{`
+      <style>{`
 
-    /* =====================================================
-       PAGE
-    ===================================================== */
+        /* =====================================================
+           PAGE
+        ===================================================== */
 
-    .gallery-page {
-      width: 100%;
-      min-height: 100vh;
+        .gallery-page {
+          width: 100%;
+          min-height: 100vh;
 
-      background: #f8f8f8;
+          background: #f8f8f8;
 
-      color: #1a1a1a;
-    }
+          color: #1a1a1a;
+        }
 
 
-    /* =====================================================
-       HEADER
-    ===================================================== */
+        /* =====================================================
+           HEADER
+        ===================================================== */
 
-    .gallery-header {
-      width: 100%;
+        .gallery-header {
+          width: 100%;
 
-      padding:
-        170px 96px 0;
-    }
+          padding:
+            170px 96px 0;
+        }
 
-    .gallery-header-inner {
+        .gallery-header-inner {
+          width: 100%;
+          max-width: 1100px;
+
+          margin: 0 auto;
+
+          display: grid;
+
+          grid-template-columns:
+            0.9fr 1.1fr;
+
+          gap: 120px;
+
+          align-items: center;
+        }
+
+        .gallery-header-image {
       width: 100%;
       max-width: 1100px;
 
-      margin: 0 auto;
+      height: 420px
 
-      display: grid;
-
-      grid-template-columns:
-        0.9fr 1.1fr;
-
-      gap: 120px;
-
-      align-items: center;
-    }
-
-    .gallery-header-image {
-  width: 100%;
-  max-width: 1100px;
-
-  height: 420px
-
-  margin: 70px auto 0;
-
-  overflow: hidden;
-
-  border-radius: 18px;
-
-  box-shadow:
-    0 14px 35px
-    rgba(0, 0, 0, 0.12);
-}
-
-.gallery-header-image img {
-  width: 100%;
-  height: 100%;
-
-  display: grid;
-
-  object-fit: cover;
-
-  object-position: center;
-}
-
-
-    /* =====================================================
-       LEFT HEADER
-    ===================================================== */
-
-    .gallery-heading {
-      display: flex;
-
-      flex-direction: column;
-
-      align-items: flex-start;
-
-      gap: 32px
-    }
-
-    .gallery-title {
-      margin: 0;
-
-      font-family: "Cinzel", serif;
-
-      font-size:
-        clamp(
-          3rem,
-          7vw,
-          5.5rem
-        );
-
-      line-height: 0.9;
-
-      font-weight: 200;
-
-      letter-spacing: -0.035em;
-
-      color: #1a1a1a;
-    }
-
-
-    /* =====================================================
-       HEADER INTRO
-    ===================================================== */
-
-    .gallery-intro {
-      width: 100%;
-
-      padding-bottom: 8px;
-    }
-
-    .gallery-intro-copy {
-      max-width: 720px;
-
-      margin: 0 0 28px;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Text",
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-
-      font-size: 1rem;
-
-      line-height: 1.7;
-
-      color: #4a4a4a;
-    }
-
-    .gallery-meta {
-      width: 100%;
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      border-top:
-        1px solid
-        rgba(85, 3, 3, 0.25);
-
-      border-bottom:
-        1px solid
-        rgba(85, 3, 3, 0.25);
-    }
-
-    .gallery-meta span {
-      padding:
-        17px 0;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Text",
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-
-      font-size: 0.67rem;
-
-      font-weight: 500;
-
-      letter-spacing: 0.22em;
-
-      text-transform: uppercase;
-
-      color: #550303;
-    }
-
-    .gallery-meta span:nth-child(2) {
-      text-align: center;
-    }
-
-    .gallery-meta span:nth-child(3) {
-      text-align: right;
-    }
-
-
-    /* =====================================================
-       HEADER DIVIDER
-    ===================================================== */
-
-    .gallery-header-line {
-      width: 100%;
-
-      max-width: 1100px;
-
-      margin:
-        64px auto 0;
-
-      border-bottom:
-        1px solid #550303;
-    }
-
-
-    /* =====================================================
-       GALLERY WALL
-    ===================================================== */
-
-    .gallery-wall {
-      width: 100%;
-
-      padding:
-        110px 96px 140px;
-    }
-
-    .gallery-wall-inner {
-      width: 100%;
-
-      max-width: 1100px;
-
-      margin: 0 auto;
-
-      display: grid;
-
-      grid-template-columns:
-        0.72fr 1.8fr;
-
-      gap: 70px;
-
-      align-items: start;
-    }
-
-
-    /* =====================================================
-       LEFT EDITORIAL COLUMN
-
-       The ASIDE itself does not scroll independently.
-
-       The inner element is sticky relative to the
-       document scroll.
-
-       ONLY this editorial section is sticky.
-    ===================================================== */
-
-    .gallery-editorial {
-      align-self: stretch;
-
-      min-width: 0;
-    }
-
-    .gallery-editorial-sticky {
-      position: sticky;
-
-      top: 120px;
-
-      align-self: start;
-
-      padding-top: 4px;
-    }
-
-    .gallery-wall-eyebrow {
-      display: block;
-
-      margin-bottom: 28px;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Text",
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-
-      font-size: 0.72rem;
-
-      font-weight: 600;
-
-      letter-spacing: 0.3em;
-
-      text-transform: uppercase;
-
-      color: #550303;
-    }
-
-    .gallery-wall-title {
-      margin: 0;
-
-      font-family: "Cinzel", serif;
-
-      font-size:
-        clamp(
-          2.0rem,
-          4.0vw,
-          2rem
-        );
-
-      line-height: 1.08;
-
-      font-weight: 400;
-
-      letter-spacing: -0.025em;
-
-      color: #1a1a1a;
-    }
-
-
-    /* =====================================================
-       BENTO GRID
-
-       Four columns.
-
-       Cards NEVER overlap.
-
-       Each card remains in the normal CSS grid flow.
-
-       Different cards span different numbers of columns
-       and rows, creating a genuine bento composition.
-    ===================================================== */
-
-    .gallery-bento {
-      width: 100%;
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-      grid-auto-rows:
-        105px;
-
-      gap: 20px;
-
-      grid-auto-flow: dense;
-
-      align-items: start;
-
-      overflow: visible;
-    }
-
-
-    /* =====================================================
-       BENTO CARD SIZES
-
-       All cards remain portrait.
-
-       Larger cards span more columns AND more rows,
-       preserving the portrait proportion.
-
-       Nothing is positioned manually, so nothing
-       overlaps.
-    ===================================================== */
-
-    .gallery-item {
-      position: relative;
+      margin: 70px auto 0;
 
       overflow: hidden;
 
-      min-width: 0;
-      min-height: 0;
-
-      aspect-ratio: 3 / 4;
-
-      border-radius: 14px;
-
-      border:
-        1px solid
-        rgba(255, 255, 255, 0.9);
-
-      background: #ddd;
+      border-radius: 18px;
 
       box-shadow:
-        0 8px 20px
+        0 14px 35px
         rgba(0, 0, 0, 0.12);
-
-      transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
     }
 
-
-    /* =====================================================
-       DESKTOP BENTO PATTERN
-
-       The composition changes throughout the gallery
-       instead of repeating identical rows.
-
-       Because the cards are grid items, they cannot
-       overlap one another.
-    ===================================================== */
-
-    .gallery-item:nth-child(1) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(2) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(3) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(4) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(5) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(6) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(7) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(8) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(9) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(10) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(11) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(12) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(13) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(14) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(15) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(16) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(17) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(18) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(19) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(20) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(21) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(22) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(23) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(24) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(25) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(26) {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .gallery-item:nth-child(27) {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item:nth-child(28) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-
-    /* =====================================================
-       IMAGES
-    ===================================================== */
-
-    .gallery-image {
+    .gallery-header-image img {
       width: 100%;
       height: 100%;
 
-      display: block;
+      display: grid;
 
       object-fit: cover;
 
       object-position: center;
-
-      user-select: none;
-
-      -webkit-user-drag: none;
     }
 
 
-    /* =====================================================
-       ROTATION
-    ===================================================== */
+        /* =====================================================
+           LEFT HEADER
+        ===================================================== */
 
-    .gallery-item:nth-child(4n + 1) {
-      transform: rotate(-0.55deg);
-    }
+        .gallery-heading {
+          display: flex;
 
-    .gallery-item:nth-child(4n + 2) {
-      transform: rotate(0.4deg);
-    }
+          flex-direction: column;
 
-    .gallery-item:nth-child(4n + 3) {
-      transform: rotate(-0.3deg);
-    }
+          align-items: flex-start;
 
-    .gallery-item:nth-child(4n) {
-      transform: rotate(0.5deg);
-    }
+          gap: 32px
+        }
 
+        .gallery-title {
+          margin: 0;
 
-    /* =====================================================
-       IMAGE OVERLAY
-    ===================================================== */
+          font-family: "Cinzel", serif;
 
-    .gallery-item::before {
-      content: "";
+          font-size:
+            clamp(
+              3rem,
+              7vw,
+              5.5rem
+            );
 
-      position: absolute;
+          line-height: 0.9;
 
-      inset: 0;
+          font-weight: 200;
 
-      z-index: 1;
+          letter-spacing: -0.035em;
 
-      background:
-        linear-gradient(
-          to top,
-          rgba(0, 0, 0, 0.48),
-          transparent 55%
-        );
+          color: #1a1a1a;
+        }
 
-      pointer-events: none;
-    }
 
+        /* =====================================================
+           HEADER INTRO
+        ===================================================== */
 
-    /* =====================================================
-       FRAME NUMBER
-    ===================================================== */
+        .gallery-intro {
+          width: 100%;
 
-    .gallery-caption {
-      position: absolute;
+          padding-bottom: 8px;
+        }
 
-      left: 14px;
-      bottom: 14px;
+        .gallery-intro-copy {
+          max-width: 720px;
 
-      z-index: 2;
+          margin: 0 0 28px;
 
-      min-width: 38px;
-      height: 28px;
+          font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "SF Pro Text",
+            "SF Pro Display",
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
 
-      padding:
-        0 10px;
+          font-size: 1rem;
 
-      display: flex;
+          line-height: 1.7;
 
-      align-items: center;
-      justify-content: center;
+          color: #4a4a4a;
+        }
 
-      border-radius: 999px;
+        .gallery-meta {
+          width: 100%;
 
-      background:
-        rgba(255, 255, 255, 0.92);
+          display: grid;
 
-      color: #550303;
+          grid-template-columns:
+            repeat(3, 1fr);
 
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Text",
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
+          border-top:
+            1px solid
+            rgba(85, 3, 3, 0.25);
 
-      font-size: 0.65rem;
+          border-bottom:
+            1px solid
+            rgba(85, 3, 3, 0.25);
+        }
 
-      font-weight: 600;
+        .gallery-meta span {
+          padding:
+            17px 0;
 
-      letter-spacing: 0.12em;
-    }
+          font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "SF Pro Text",
+            "SF Pro Display",
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
 
+          font-size: 0.67rem;
 
-    /* =====================================================
-       HOVER
-    ===================================================== */
+          font-weight: 500;
 
-    @media (hover: hover) and (pointer: fine) {
+          letter-spacing: 0.22em;
 
-      .gallery-item:hover {
-        transform:
-          translateY(-4px)
-          scale(1.015);
+          text-transform: uppercase;
 
-        box-shadow:
-          0 0 0 3px #550303,
-          0 12px 26px
-          rgba(85, 3, 3, 0.35);
+          color: #550303;
+        }
 
-        z-index: 5;
-      }
+        .gallery-meta span:nth-child(2) {
+          text-align: center;
+        }
 
-    }
+        .gallery-meta span:nth-child(3) {
+          text-align: right;
+        }
 
 
-    /* =====================================================
-       TABLET
-    ===================================================== */
+        /* =====================================================
+           HEADER DIVIDER
+        ===================================================== */
 
-    @media (max-width: 1100px) {
+        .gallery-header-line {
+          width: 100%;
 
-      .gallery-header {
-        padding:
-          150px 56px 0;
-      }
+          max-width: 1100px;
 
-      .gallery-wall {
-        padding:
-          100px 56px 120px;
-      }
+          margin:
+            64px auto 0;
 
-      .gallery-header-inner {
-        gap: 70px;
-      }
+          border-bottom:
+            1px solid #550303;
+        }
 
-      .gallery-wall-inner {
-        gap: 50px;
-      }
 
-      .gallery-bento {
-        grid-template-columns:
-          repeat(3, minmax(0, 1fr));
+        /* =====================================================
+           GALLERY WALL
+        ===================================================== */
 
-        grid-auto-rows:
-          110px;
+        .gallery-wall {
+          width: 100%;
 
-        gap: 18px;
-      }
+          padding:
+            110px 96px 140px;
+        }
 
+        .gallery-wall-inner {
+          width: 100%;
 
-      /* Reset the desktop pattern */
+          max-width: 1100px;
 
-      .gallery-item:nth-child(n) {
-        grid-column: span 1;
-        grid-row: span 1;
-      }
+          margin: 0 auto;
 
+          display: grid;
 
-      /* New 3-column bento rhythm */
+          grid-template-columns:
+            0.72fr 1.8fr;
 
-      .gallery-item:nth-child(1),
-      .gallery-item:nth-child(6),
-      .gallery-item:nth-child(11),
-      .gallery-item:nth-child(16),
-      .gallery-item:nth-child(21),
-      .gallery-item:nth-child(26) {
-        grid-column: span 2;
-        grid-row: span 2;
-      }
+          gap: 70px;
 
-      .gallery-item:nth-child(3),
-      .gallery-item:nth-child(8),
-      .gallery-item:nth-child(13),
-      .gallery-item:nth-child(18),
-      .gallery-item:nth-child(23),
-      .gallery-item:nth-child(28) {
-        grid-row: span 2;
-      }
+          align-items: start;
+        }
 
-    }
 
+        /* =====================================================
+           LEFT EDITORIAL COLUMN
 
-    /* =====================================================
-       MOBILE
-    ===================================================== */
+           The ASIDE itself does not scroll independently.
 
-    @media (max-width: 900px) {
+           The inner element is sticky relative to the
+           document scroll.
 
-      .gallery-header {
-        padding:
-          130px 28px 0;
-      }
+           ONLY this editorial section is sticky.
+        ===================================================== */
 
-      .gallery-header-inner {
-        display: flex;
+        .gallery-editorial {
+          align-self: stretch;
 
-        flex-direction: column;
+          min-width: 0;
+        }
 
-        align-items: flex-start;
+        .gallery-editorial-sticky {
+          position: sticky;
 
-        gap: 48px;
-      }
+          top: 120px;
 
-      .gallery-title {
-        font-size:
-          clamp(
-            4rem,
-            18vw,
-            6rem
-          );
-      }
+          align-self: start;
 
-      .gallery-intro {
-        padding-bottom: 0;
-      }
+          padding-top: 4px;
+        }
 
-      .gallery-intro-copy {
-        max-width: 500px;
-      }
+        .gallery-wall-eyebrow {
+          display: block;
 
-      .gallery-meta {
-        grid-template-columns:
-          repeat(3, 1fr);
-      }
+          margin-bottom: 28px;
 
-      .gallery-meta span {
-        font-size: 0.58rem;
+          font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "SF Pro Text",
+            "SF Pro Display",
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
 
-        letter-spacing: 0.14em;
-      }
+          font-size: 0.72rem;
 
-      .gallery-header-line {
-        margin-top: 48px;
-      }
+          font-weight: 600;
 
+          letter-spacing: 0.3em;
 
-      /* ===============================================
-         MOBILE WALL
-      =============================================== */
+          text-transform: uppercase;
 
-      .gallery-wall {
-        padding:
-          80px 28px 100px;
-      }
+          color: #550303;
+        }
 
-      .gallery-wall-inner {
-        display: flex;
+        .gallery-wall-title {
+          margin: 0;
 
-        flex-direction: column;
+          font-family: "Cinzel", serif;
 
-        gap: 48px;
-      }
+          font-size:
+            clamp(
+              2.0rem,
+              4.0vw,
+              2rem
+            );
 
+          line-height: 1.08;
 
-      /* ===============================================
-         MOBILE EDITORIAL
+          font-weight: 400;
 
-         Sticky is intentionally disabled.
-      =============================================== */
+          letter-spacing: -0.025em;
 
-      .gallery-editorial {
-        width: 100%;
-      }
+          color: #1a1a1a;
+        }
 
-      .gallery-editorial-sticky {
-        position: relative;
 
-        top: auto;
+        /* =====================================================
+           BENTO GRID
 
-        padding-top: 0;
-      }
+           Four columns.
 
-      .gallery-wall-eyebrow {
-        margin-bottom: 18px;
-      }
+           Cards NEVER overlap.
 
-      .gallery-wall-title {
-        font-size:
-          clamp(
-            2.5rem,
-            10vw,
-            4rem
-          );
-      }
+           Each card remains in the normal CSS grid flow.
 
+           Different cards span different numbers of columns
+           and rows, creating a genuine bento composition.
+        ===================================================== */
 
-      /* ===============================================
-         MOBILE BENTO
+        .gallery-bento {
+          width: 100%;
 
-         Two columns.
+          display: grid;
 
-         All cards are portrait.
+          grid-template-columns:
+            repeat(4, minmax(0, 1fr));
 
-         No overlap.
-      =============================================== */
+          grid-auto-rows:
+            105px;
 
-      .gallery-bento {
-        width: 100%;
+          gap: 20px;
 
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
+          grid-auto-flow: dense;
 
-        grid-auto-rows:
-          auto;
+          align-items: start;
 
-        gap: 14px;
+          overflow: visible;
+        }
 
-        align-items: start;
-      }
 
+        /* =====================================================
+           BENTO CARD SIZES
 
-      .gallery-item:nth-child(n) {
-        grid-column: span 1;
+           All cards remain portrait.
 
-        grid-row: span 1;
+           Larger cards span more columns AND more rows,
+           preserving the portrait proportion.
 
-        aspect-ratio: 3 / 4;
+           Nothing is positioned manually, so nothing
+           overlaps.
+        ===================================================== */
 
-        transform: none;
-      }
+        .gallery-item {
+          position: relative;
 
+          overflow: hidden;
 
-      /* Occasional wider portrait card */
+          min-width: 0;
+          min-height: 0;
 
-      .gallery-item:nth-child(5),
-      .gallery-item:nth-child(13),
-      .gallery-item:nth-child(21) {
-        grid-column: span 2;
+          aspect-ratio: 3 / 4;
 
-        aspect-ratio: 3 / 4;
-      }
+          border-radius: 14px;
 
+          border:
+            1px solid
+            rgba(255, 255, 255, 0.9);
 
-      .gallery-caption {
-        left: 10px;
-        bottom: 10px;
+          background: #ddd;
 
-        min-width: 34px;
-        height: 25px;
+          box-shadow:
+            0 8px 20px
+            rgba(0, 0, 0, 0.12);
 
-        font-size: 0.58rem;
-      }
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
 
-    }
+          cursor: pointer;
+        }
 
 
-    /* =====================================================
-       SMALL PHONES
-    ===================================================== */
+        /* =====================================================
+           DESKTOP BENTO PATTERN
 
-    @media (max-width: 480px) {
+           The composition changes throughout the gallery
+           instead of repeating identical rows.
 
-      .gallery-header {
-        padding:
-          120px 22px 0;
-      }
+           Because the cards are grid items, they cannot
+           overlap one another.
+        ===================================================== */
 
-      .gallery-header-inner {
-        gap: 40px;
-      }
+        .gallery-item:nth-child(1) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-      .gallery-eyebrow {
-        font-size: 0.62rem;
+        .gallery-item:nth-child(2) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-        letter-spacing: 0.23em;
-      }
+        .gallery-item:nth-child(3) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-      .gallery-title {
-        font-size:
-          clamp(
-            3.8rem,
-            19vw,
-            5rem
-          );
-      }
+        .gallery-item:nth-child(4) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-      .gallery-intro-copy {
-        font-size: 0.92rem;
-      }
+        .gallery-item:nth-child(5) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-      .gallery-meta {
-        display: flex;
+        .gallery-item:nth-child(6) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-        justify-content: space-between;
+        .gallery-item:nth-child(7) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-        gap: 10px;
-      }
+        .gallery-item:nth-child(8) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-      .gallery-meta span {
-        font-size: 0.53rem;
+        .gallery-item:nth-child(9) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-        letter-spacing: 0.1em;
-      }
+        .gallery-item:nth-child(10) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-      .gallery-meta span:nth-child(2),
-      .gallery-meta span:nth-child(3) {
-        text-align: left;
-      }
+        .gallery-item:nth-child(11) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-      .gallery-wall {
-        padding:
-          70px 22px 90px;
-      }
+        .gallery-item:nth-child(12) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
+        .gallery-item:nth-child(13) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-      /* ===============================================
-         SMALL PHONE BENTO
-      =============================================== */
+        .gallery-item:nth-child(14) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-      .gallery-bento {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
+        .gallery-item:nth-child(15) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-        gap: 12px;
-      }
+        .gallery-item:nth-child(16) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
+        .gallery-item:nth-child(17) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-      .gallery-item:nth-child(5),
-      .gallery-item:nth-child(13),
-      .gallery-item:nth-child(21) {
-        grid-column: span 2;
-      }
+        .gallery-item:nth-child(18) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
+        .gallery-item:nth-child(19) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-      .gallery-wall-title {
-        font-size: 2.4rem;
-      }
+        .gallery-item:nth-child(20) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-    }
+        .gallery-item:nth-child(21) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
+        .gallery-item:nth-child(22) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-    /* =====================================================
-       REDUCED MOTION
-    ===================================================== */
+        .gallery-item:nth-child(23) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-    @media (prefers-reduced-motion: reduce) {
+        .gallery-item:nth-child(24) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-      .gallery-item {
-        transition: none;
-      }
+        .gallery-item:nth-child(25) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-    }
+        .gallery-item:nth-child(26) {
+          grid-column: span 2;
+          grid-row: span 2;
+        }
 
-  `}</style>
+        .gallery-item:nth-child(27) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
 
-  <Footer />
-</main>
+        .gallery-item:nth-child(28) {
+          grid-column: span 1;
+          grid-row: span 2;
+        }
 
-);
+
+        /* =====================================================
+           IMAGES
+        ===================================================== */
+
+        .gallery-image {
+          width: 100%;
+          height: 100%;
+
+          display: block;
+
+          object-fit: cover;
+
+          object-position: center;
+
+          user-select: none;
+
+          -webkit-user-drag: none;
+        }
+
+
+        /* =====================================================
+           ROTATION
+        ===================================================== */
+
+        .gallery-item:nth-child(4n + 1) {
+          transform: rotate(-0.55deg);
+        }
+
+        .gallery-item:nth-child(4n + 2) {
+          transform: rotate(0.4deg);
+        }
+
+        .gallery-item:nth-child(4n + 3) {
+          transform: rotate(-0.3deg);
+        }
+
+        .gallery-item:nth-child(4n) {
+          transform: rotate(0.5deg);
+        }
+
+
+        /* =====================================================
+           IMAGE OVERLAY
+        ===================================================== */
+
+        .gallery-item::before {
+          content: "";
+
+          position: absolute;
+
+          inset: 0;
+
+          z-index: 1;
+
+          background:
+            linear-gradient(
+              to top,
+              rgba(0, 0, 0, 0.48),
+              transparent 55%
+            );
+
+          pointer-events: none;
+        }
+
+
+        /* =====================================================
+           FRAME NUMBER
+        ===================================================== */
+
+        .gallery-caption {
+          position: absolute;
+
+          left: 14px;
+          bottom: 14px;
+
+          z-index: 2;
+
+          min-width: 38px;
+          height: 28px;
+
+          padding:
+            0 10px;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          border-radius: 999px;
+
+          background:
+            rgba(255, 255, 255, 0.92);
+
+          color: #550303;
+
+          font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "SF Pro Text",
+            "SF Pro Display",
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
+
+          font-size: 0.65rem;
+
+          font-weight: 600;
+
+          letter-spacing: 0.12em;
+        }
+
+
+        /* =====================================================
+           HOVER
+        ===================================================== */
+
+        @media (hover: hover) and (pointer: fine) {
+
+          .gallery-item:hover {
+            transform:
+              translateY(-4px)
+              scale(1.015);
+
+            box-shadow:
+              0 0 0 3px #550303,
+              0 12px 26px
+              rgba(85, 3, 3, 0.35);
+
+            z-index: 5;
+          }
+
+        }
+
+
+        /* =====================================================
+           LIGHTBOX / EXPANDED IMAGE VIEW
+        ===================================================== */
+
+        .gallery-lightbox {
+          position: fixed;
+
+          inset: 0;
+
+          z-index: 1000;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          background: rgba(0, 0, 0, 0.92);
+
+          padding: 24px;
+
+          animation: gallery-lightbox-fade 0.2s ease;
+        }
+
+        @keyframes gallery-lightbox-fade {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .gallery-lightbox-image {
+          max-width: 100%;
+          max-height: 100%;
+
+          object-fit: contain;
+
+          border-radius: 10px;
+
+          box-shadow:
+            0 20px 60px
+            rgba(0, 0, 0, 0.5);
+
+          user-select: none;
+
+          -webkit-user-drag: none;
+        }
+
+        .gallery-lightbox-close {
+          position: fixed;
+
+          top: 20px;
+          right: 20px;
+
+          z-index: 1001;
+
+          width: 44px;
+          height: 44px;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          border: none;
+
+          border-radius: 50%;
+
+          background: rgba(255, 255, 255, 0.95);
+
+          color: #1a1a1a;
+
+          font-size: 1.6rem;
+
+          line-height: 1;
+
+          cursor: pointer;
+
+          box-shadow:
+            0 4px 14px
+            rgba(0, 0, 0, 0.35);
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+          .gallery-header {
+            padding:
+              150px 56px 0;
+          }
+
+          .gallery-wall {
+            padding:
+              100px 56px 120px;
+          }
+
+          .gallery-header-inner {
+            gap: 70px;
+          }
+
+          .gallery-wall-inner {
+            gap: 50px;
+          }
+
+          .gallery-bento {
+            grid-template-columns:
+              repeat(3, minmax(0, 1fr));
+
+            grid-auto-rows:
+              110px;
+
+            gap: 18px;
+          }
+
+
+          /* Reset the desktop pattern */
+
+          .gallery-item:nth-child(n) {
+            grid-column: span 1;
+            grid-row: span 1;
+          }
+
+
+          /* New 3-column bento rhythm */
+
+          .gallery-item:nth-child(1),
+          .gallery-item:nth-child(6),
+          .gallery-item:nth-child(11),
+          .gallery-item:nth-child(16),
+          .gallery-item:nth-child(21),
+          .gallery-item:nth-child(26) {
+            grid-column: span 2;
+            grid-row: span 2;
+          }
+
+          .gallery-item:nth-child(3),
+          .gallery-item:nth-child(8),
+          .gallery-item:nth-child(13),
+          .gallery-item:nth-child(18),
+          .gallery-item:nth-child(23),
+          .gallery-item:nth-child(28) {
+            grid-row: span 2;
+          }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+          .gallery-header {
+            padding:
+              130px 28px 0;
+          }
+
+          .gallery-header-inner {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 48px;
+          }
+
+          .gallery-title {
+            font-size:
+              clamp(
+                4rem,
+                18vw,
+                6rem
+              );
+          }
+
+          .gallery-intro {
+            padding-bottom: 0;
+          }
+
+          .gallery-intro-copy {
+            max-width: 500px;
+          }
+
+          .gallery-meta {
+            grid-template-columns:
+              repeat(3, 1fr);
+          }
+
+          .gallery-meta span {
+            font-size: 0.58rem;
+
+            letter-spacing: 0.14em;
+          }
+
+          .gallery-header-line {
+            margin-top: 48px;
+          }
+
+
+          /* ===============================================
+             MOBILE WALL
+          =============================================== */
+
+          .gallery-wall {
+            padding:
+              80px 28px 100px;
+          }
+
+          .gallery-wall-inner {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 48px;
+          }
+
+
+          /* ===============================================
+             MOBILE EDITORIAL
+
+             Sticky is intentionally disabled.
+          =============================================== */
+
+          .gallery-editorial {
+            width: 100%;
+          }
+
+          .gallery-editorial-sticky {
+            position: relative;
+
+            top: auto;
+
+            padding-top: 0;
+          }
+
+          .gallery-wall-eyebrow {
+            margin-bottom: 18px;
+          }
+
+          .gallery-wall-title {
+            font-size:
+              clamp(
+                2.5rem,
+                10vw,
+                4rem
+              );
+          }
+
+
+          /* ===============================================
+             MOBILE BENTO
+
+             Two columns.
+
+             All cards are portrait.
+
+             No overlap.
+          =============================================== */
+
+          .gallery-bento {
+            width: 100%;
+
+            grid-template-columns:
+              repeat(2, minmax(0, 1fr));
+
+            grid-auto-rows:
+              auto;
+
+            gap: 14px;
+
+            align-items: start;
+          }
+
+
+          .gallery-item:nth-child(n) {
+            grid-column: span 1;
+
+            grid-row: span 1;
+
+            aspect-ratio: 3 / 4;
+
+            transform: none;
+          }
+
+
+          /* Occasional wider portrait card */
+
+          .gallery-item:nth-child(5),
+          .gallery-item:nth-child(13),
+          .gallery-item:nth-child(21) {
+            grid-column: span 2;
+
+            aspect-ratio: 3 / 4;
+          }
+
+
+          .gallery-caption {
+            left: 10px;
+            bottom: 10px;
+
+            min-width: 34px;
+            height: 25px;
+
+            font-size: 0.58rem;
+          }
+
+
+          /* ===============================================
+             MOBILE LIGHTBOX
+          =============================================== */
+
+          .gallery-lightbox {
+            padding: 16px;
+          }
+
+          .gallery-lightbox-close {
+            top: 16px;
+            right: 16px;
+
+            width: 40px;
+            height: 40px;
+
+            font-size: 1.4rem;
+          }
+
+        }
+
+
+        /* =====================================================
+           SMALL PHONES
+        ===================================================== */
+
+        @media (max-width: 480px) {
+
+          .gallery-header {
+            padding:
+              120px 22px 0;
+          }
+
+          .gallery-header-inner {
+            gap: 40px;
+          }
+
+          .gallery-eyebrow {
+            font-size: 0.62rem;
+
+            letter-spacing: 0.23em;
+          }
+
+          .gallery-title {
+            font-size:
+              clamp(
+                3.8rem,
+                19vw,
+                5rem
+              );
+          }
+
+          .gallery-intro-copy {
+            font-size: 0.92rem;
+          }
+
+          .gallery-meta {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 10px;
+          }
+
+          .gallery-meta span {
+            font-size: 0.53rem;
+
+            letter-spacing: 0.1em;
+          }
+
+          .gallery-meta span:nth-child(2),
+          .gallery-meta span:nth-child(3) {
+            text-align: left;
+          }
+
+          .gallery-wall {
+            padding:
+              70px 22px 90px;
+          }
+
+
+          /* ===============================================
+             SMALL PHONE BENTO
+          =============================================== */
+
+          .gallery-bento {
+            grid-template-columns:
+              repeat(2, minmax(0, 1fr));
+
+            gap: 12px;
+          }
+
+
+          .gallery-item:nth-child(5),
+          .gallery-item:nth-child(13),
+          .gallery-item:nth-child(21) {
+            grid-column: span 2;
+          }
+
+
+          .gallery-wall-title {
+            font-size: 2.4rem;
+          }
+
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+          .gallery-item {
+            transition: none;
+          }
+
+          .gallery-lightbox {
+            animation: none;
+          }
+
+        }
+
+      `}</style>
+
+      <Footer />
+    </main>
+
+  );
 }
