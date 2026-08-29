@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 
 export default function InvitationPage() {
 const [showInvitation, setShowInvitation] = useState(false);
@@ -147,6 +148,8 @@ return ( <main className="page-shell">
 
     </div>
   )}
+
+<Footer />
 
 
   {/* =====================================================

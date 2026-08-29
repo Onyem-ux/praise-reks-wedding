@@ -2,6 +2,7 @@
 
 import React from "react";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 
 interface SquadMember {
 name: string;
@@ -818,6 +819,9 @@ return ( <main className="page-shell"> <SiteNav />
     }
 
   `}</style>
+
+  <Footer />
+  
 </main>
 
 );

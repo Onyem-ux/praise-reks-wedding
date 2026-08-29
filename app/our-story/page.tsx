@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 
 const timeline = [
   {
@@ -742,6 +743,9 @@ export default function OurStoryPage() {
           </p>
         </div>
       </section>
+
+      <Footer />
+      
     </main>
   );
 }

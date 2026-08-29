@@ -2,6 +2,7 @@
 
 import React from "react";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 
 /*
 
@@ -121,26 +122,26 @@ return ( <main className="gallery-page"> <SiteNav />
 
       <div className="gallery-heading">
 
-        <h1 className="gallery-title">
-          Our love, in pictures
-        </h1>
+  <h1 className="gallery-title">
+    Our love, in pictures
+  </h1>
 
-      </div>
+  <p className="gallery-intro-copy">
+    Welcome to our gallery. Let's take through the journey from how it started, and show you how it's going!
+  </p>
 
-      <div className="gallery-intro">
+</div>
 
-        <p className="gallery-intro-copy">
-          Welcome to our gallery. Let's take through the journey from how it started, and show you how it's going!
-        </p>
+<div className="gallery-intro">
 
-      <div className="gallery-header-image">
+<div className="gallery-header-image">
   <img
     src="/gallery/12(1).jpg"
     alt="Praise and Reks"
   />
 </div>
 
-      </div>
+</div>
 
     </div>
 
@@ -263,7 +264,7 @@ return ( <main className="gallery-page"> <SiteNav />
 
       gap: 120px;
 
-      align-items: end;
+      align-items: center;
     }
 
     .gallery-header-image {
@@ -305,6 +306,8 @@ return ( <main className="gallery-page"> <SiteNav />
       flex-direction: column;
 
       align-items: flex-start;
+
+      gap: 32px
     }
 
     .gallery-title {
@@ -1218,6 +1221,8 @@ return ( <main className="gallery-page"> <SiteNav />
     }
 
   `}</style>
+
+  <Footer />
 </main>
 
 );

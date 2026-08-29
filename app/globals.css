@@ -1,595 +1,598 @@
-@import "tailwindcss";
+  @import "tailwindcss";
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.cinzel {
-  font-family: "Cinzel", serif;
-}
-
-.wedding-page {
-  min-height: 100vh;
-  padding: 140px 8vw;
-  background:
-    linear-gradient(
-      rgba(233, 233, 233, 0.75),
-      rgba(233, 233, 233, 0.75)
-    ),
-    url("/White embross bg.jpg");
-  background-size: cover;
-  background-position: center;
-  color: #550303;
-  font-family: "Cinzel", serif;
-}
-
-.wedding-page h1 {
-  margin: 0 0 20px;
-  font-size: clamp(2.5rem, 6vw, 6rem);
-  font-weight: 600;
-}
-
-.wedding-page p {
-  max-width: 600px;
-  font-family: sans-serif;
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #333;
-}
-
-/* =====================================================
-   REGISTRY PAGE
-====================================================== */
-
-.page-shell {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
-  background: #f8f6f1;
-  color: #102033;
-}
-
-/* =====================================================
-   HERO
-====================================================== */
-
-.page-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  padding: 160px 24px 70px;
-  text-align: left;
-}
-
-.page-eyebrow,
-.feature-eyebrow,
-.section-eyebrow {
-  font-family: "sf-pro", sans-serif;
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #8d2424;
-}
-
-.page-eyebrow {
-  margin-bottom: 20px;
-}
-
-.page-title {
-  margin: 0 0 22px;
-  font-family: cinzel;
-  font-size: clamp(3rem, 7vw, 5.5rem);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-  color: #102033;
-}
-
-.page-subtitle {
-  max-width: 570px;
-  margin: 0;
-  font-family: SF-PRO semibol, sans-serif;
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #68645e;
-}
-
-/* =====================================================
-   FEATURED REGISTRY
-====================================================== */
-
-.registry-feature-section {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 0 24px 100px;
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
   }
 
-.registry-feature {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid #550303;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 25px 70px rgba(32, 27, 19, 0.07);
-}
-
-/* =====================================================
-   WEDDING LOGO
-====================================================== */
-
-.registry-monogram {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  width: clamp(300px, 50vw, 600px);
-
-  transform: translate(-50%, -50%);
-
-  pointer-events: none;
-  user-select: none;
-
-  opacity: 0.20;
-}
-
-.registry-logo {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-
-  opacity: 0.45;
-  filter: saturate(0.7);
-}
-
-/* =====================================================
-   FEATURE CONTENT
-====================================================== */
-
-.feature-inner {
-  position: relative;
-  z-index: 2;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  padding: 75px 50px;
-
-  text-align: center;
-}
-
-.feature-eyebrow {
-  margin-bottom: 22px;
-}
-
-.feature-inner h2 {
-  margin: 0;
-
-  font-family: "Cinzel", serif;
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
-  font-weight: 400;
-  line-height: 1.12;
-
-  letter-spacing: -0.02em;
-
-  color: #102033;
-}
-
-/* =====================================================
-   DIVIDER
-====================================================== */
-
-.feature-divider {
-  display: flex;
-  align-items: center;
-
-  width: min(250px, 70%);
-
-  margin: 30px 0 26px;
-
-  gap: 12px;
-}
-
-.feature-divider span {
-  flex: 1;
-  height: 1px;
-  background: #e5d7c4;
-}
-
-.feature-divider i {
-  font-family: Georgia, serif;
-  font-size: 0.8rem;
-  font-style: normal;
-  color: #8d2424;
-}
-
-/* =====================================================
-   DESCRIPTION
-====================================================== */
-
-.feature-inner p {
-  max-width: 510px;
-  margin: 0 0 32px;
-
-  font-family: "SF-pro", sans-serif;
-  font-size: 0.98rem;
-  line-height: 1.8;
-
-  color: #67625c;
-}
-
-/* =====================================================
-   CTA
-====================================================== */
-
-.registry-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 15px;
-
-  padding: 15px 25px;
-
-  border: 1px solid #550303;
-
-  background: #550303;
-
-  font-family: "Cinzel", serif;
-  font-size: 0.68rem;
-  font-weight: 500;
-  border-radius: 12px;
-
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-
-  color: #ffffff;
-
-  text-decoration: none;
-
-  transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    transform 0.3s ease;
-}
-
-.registry-cta:hover {
-  background: #131313;
-  color: #ffffff;
-  transform: translateY(-2px);
-}
-
-.cta-arrow {
-  font-family: Arial, sans-serif;
-  font-size: 1rem;
-  line-height: 1;
-
-  transition: transform 0.3s ease;
-}
-
-.registry-cta:hover .cta-arrow {
-  transform: translate(3px, -3px);
-}
-
-.external-note {
-  margin-top: 12px;
-
-  font-family: "SF-pro", sans-serif;
-  font-size: 0.65rem;
-
-  letter-spacing: 0.01em;
-
-  color: #aaa39a;
-}
-
-/* =====================================================
-   CASH SECTION
-====================================================== */
-
-.cash-section {
-  padding: 0 24px 100px;
-}
-
-.section-heading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  margin-bottom: 40px;
-
-  text-align: center;
-}
-
-.section-eyebrow {
-  margin-bottom: 14px;
-}
-
-.section-heading h2 {
-  margin: 0 0 12px;
-
-  font-family: "Cinzel", serif;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 400;
-
-  color: #102033;
-}
-
-.section-heading p {
-  margin: 0;
-
-  font-family: "SF-pro", sans-serif;
-  font-size: 0.82rem;
-
-  color: #8a8177;
-}
-
-/* =====================================================
-   BANK CARDS
-====================================================== */
-
-.registry-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 18px;
-
-  width: 100%;
-  max-width: 920px;
-
-  margin: 0 auto;
-}
-
-.registry-card {
-  min-height: 225px;
-
-  padding: 30px;
-
-  border: 1px solid #550303;
-
-  background: #ffffff;
-
-  border-radius: 24px;
-}
-
-.card-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 32px;
-  height: 32px;
-
-  margin-bottom: 24px;
-
-  border: 1px solid #550303;
-  border-radius: 50%;
-
-  font-family: cinzel, serif;
-  font-size: 0.9rem;
-
-  color: #550303;
-}
-
-.registry-label {
-  margin-bottom: 7px;
-
-  font-family: "Cinzel", serif;
-  font-size: 0.68rem;
-  font-weight: 500;
-
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-
-  color: #550303;
-}
-
-.bank-name {
-  font-family: cinzel, serif;
-  font-size: 1.55rem;
-  color: #102033;
-}
-
-.account-name-label {
-  margin-top: 14px;
-  margin-bottom: 6px;
-
-  font-family: "SF-pro", sans-serif;
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-
-  color: #9a9187;
-}
-
-.account-name {
-  font-family: "Cinzel", serif;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.4;
-
-  color: #102033;
-}
-
-.card-divider {
-  width: 100%;
-  height: 1px;
-
-  margin: 20px 0;
-
-  background: #550303;
-}
-
-.account-label {
-  margin-bottom: 7px;
-
-  font-family: SF-pro, sans-serif;
-  font-size: 0.62rem;
-
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-
-  color: #9a9187;
-}
-
-.account-number {
-  font-family:
-    "SFMono-Regular",
-    Consolas,
-    "Liberation Mono",
-    monospace;
-
-  font-size: 1rem;
-  font-weight: 600;
-
-  letter-spacing: 0.08em;
-
-  color: #102033;
-}
-
-/* =====================================================
-   THANK YOU
-====================================================== */
-
-.thank-you {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  padding: 0 24px 100px;
-
-  text-align: center;
-}
-
-.closing-mark {
-  margin-bottom: 20px;
-
-  font-size: 0.7rem;
-
-  color: #8d2424;
-}
-
-.thank-you h2 {
-  margin: 0 0 16px;
-
-  font-family: cinzel, serif;
-  font-size: clamp(1.8rem, 4vw, 2.7rem);
-  font-weight: 400;
-  line-height: 1.25;
-
-  color: #102033;
-}
-
-.thank-you p {
-  margin: 0;
-
-  font-family: Arial, sans-serif;
-  font-size: 0.78rem;
-
-  color: #94887d;
-}
-
-/* =====================================================
-   TABLET
-====================================================== */
-
-@media (max-width: 850px) {
-  .registry-list {
-    grid-template-columns: 1fr;
+  .cinzel {
+    font-family: "Cinzel", serif;
+  }
+
+  .wedding-page {
+    min-height: 100vh;
+    padding: 140px 8vw;
+    background:
+      linear-gradient(
+        rgba(233, 233, 233, 0.75),
+        rgba(233, 233, 233, 0.75)
+      ),
+      url("/White embross bg.jpg");
+    background-size: cover;
+    background-position: center;
+    color: #550303;
+    font-family: "Cinzel", serif;
+  }
+
+  .wedding-page h1 {
+    margin: 0 0 20px;
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-weight: 600;
+  }
+
+  .wedding-page p {
     max-width: 600px;
+    font-family: sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
   }
 
-  .registry-card {
-    min-height: auto;
+  /* =====================================================
+    REGISTRY PAGE
+  ====================================================== */
+
+  .page-shell {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background: #f8f6f1;
+    color: #102033;
   }
-}
 
-/* =====================================================
-   MOBILE
-====================================================== */
+  /* =====================================================
+    HERO
+  ====================================================== */
 
-@media (max-width: 600px) {
   .page-hero {
-    padding: 120px 20px 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 160px 24px 70px;
+    text-align: center;
+
+    max-width: 700px;
+  margin: 0 auto;
+  }
+
+  .page-eyebrow,
+  .feature-eyebrow,
+  .section-eyebrow {
+    font-family: "sf-pro", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #8d2424;
   }
 
   .page-eyebrow {
-    margin-bottom: 17px;
+    margin-bottom: 20px;
   }
 
   .page-title {
-    font-size: clamp(2.6rem, 12vw, 3.7rem);
+    margin: 0 0 22px;
+    font-family: cinzel;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: #102033;
   }
 
   .page-subtitle {
-    font-size: 0.92rem;
-    line-height: 1.75;
+    max-width: 570px;
+    margin: 0;
+    font-family: SF-PRO semibol, sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #68645e;
   }
+
+  /* =====================================================
+    FEATURED REGISTRY
+  ====================================================== */
 
   .registry-feature-section {
-    padding: 0 17px 75px;
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+    }
+
+  .registry-feature {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #550303;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 25px 70px rgba(32, 27, 19, 0.07);
   }
 
-  .feature-inner {
-    padding: 55px 24px;
-  }
-
-  .feature-inner h2 {
-    font-size: 2.25rem;
-  }
-
-  .feature-inner p {
-    font-size: 0.92rem;
-    line-height: 1.75;
-  }
+  /* =====================================================
+    WEDDING LOGO
+  ====================================================== */
 
   .registry-monogram {
-    width: 330px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: clamp(300px, 50vw, 600px);
+
+    transform: translate(-50%, -50%);
+
+    pointer-events: none;
+    user-select: none;
+
+    opacity: 0.20;
   }
 
   .registry-logo {
-    opacity: 0.4;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+
+    opacity: 0.45;
+    filter: saturate(0.7);
   }
+
+  /* =====================================================
+    FEATURE CONTENT
+  ====================================================== */
+
+  .feature-inner {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 75px 50px;
+
+    text-align: center;
+  }
+
+  .feature-eyebrow {
+    margin-bottom: 22px;
+  }
+
+  .feature-inner h2 {
+    margin: 0;
+
+    font-family: "Cinzel", serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 400;
+    line-height: 1.12;
+
+    letter-spacing: -0.02em;
+
+    color: #102033;
+  }
+
+  /* =====================================================
+    DIVIDER
+  ====================================================== */
+
+  .feature-divider {
+    display: flex;
+    align-items: center;
+
+    width: min(250px, 70%);
+
+    margin: 30px 0 26px;
+
+    gap: 12px;
+  }
+
+  .feature-divider span {
+    flex: 1;
+    height: 1px;
+    background: #e5d7c4;
+  }
+
+  .feature-divider i {
+    font-family: Georgia, serif;
+    font-size: 0.8rem;
+    font-style: normal;
+    color: #8d2424;
+  }
+
+  /* =====================================================
+    DESCRIPTION
+  ====================================================== */
+
+  .feature-inner p {
+    max-width: 510px;
+    margin: 0 0 32px;
+
+    font-family: "SF-pro", sans-serif;
+    font-size: 0.98rem;
+    line-height: 1.8;
+
+    color: #67625c;
+  }
+
+  /* =====================================================
+    CTA
+  ====================================================== */
 
   .registry-cta {
-    width: 100%;
-    max-width: 290px;
-    padding: 15px 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+
+    padding: 15px 25px;
+
+    border: 1px solid #550303;
+
+    background: #550303;
+
+    font-family: "Cinzel", serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    border-radius: 12px;
+
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transition:
+      background 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s ease;
   }
 
+  .registry-cta:hover {
+    background: #131313;
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  .cta-arrow {
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1;
+
+    transition: transform 0.3s ease;
+  }
+
+  .registry-cta:hover .cta-arrow {
+    transform: translate(3px, -3px);
+  }
+
+  .external-note {
+    margin-top: 12px;
+
+    font-family: "SF-pro", sans-serif;
+    font-size: 0.65rem;
+
+    letter-spacing: 0.01em;
+
+    color: #aaa39a;
+  }
+
+  /* =====================================================
+    CASH SECTION
+  ====================================================== */
+
   .cash-section {
-    padding: 0 17px 75px;
+    padding: 0 24px 100px;
   }
 
   .section-heading {
-    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-bottom: 40px;
+
+    text-align: center;
+  }
+
+  .section-eyebrow {
+    margin-bottom: 14px;
   }
 
   .section-heading h2 {
-    font-size: 1.9rem;
+    margin: 0 0 12px;
+
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 400;
+
+    color: #102033;
   }
 
   .section-heading p {
-    max-width: 300px;
-    line-height: 1.6;
+    margin: 0;
+
+    font-family: "SF-pro", sans-serif;
+    font-size: 0.82rem;
+
+    color: #8a8177;
   }
 
+  /* =====================================================
+    BANK CARDS
+  ====================================================== */
+
   .registry-list {
-    gap: 14px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px;
+
+    width: 100%;
+    max-width: 920px;
+
+    margin: 0 auto;
   }
 
   .registry-card {
-    padding: 26px;
+    min-height: 225px;
+
+    padding: 30px;
+
+    border: 1px solid #550303;
+
+    background: #ffffff;
+
+    border-radius: 24px;
   }
 
-  .thank-you {
-    padding: 0 20px 75px;
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    margin-bottom: 24px;
+
+    border: 1px solid #550303;
+    border-radius: 50%;
+
+    font-family: cinzel, serif;
+    font-size: 0.9rem;
+
+    color: #550303;
   }
-}
+
+  .registry-label {
+    margin-bottom: 7px;
+
+    font-family: "Cinzel", serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+
+    color: #550303;
+  }
+
+  .bank-name {
+    font-family: cinzel, serif;
+    font-size: 1.55rem;
+    color: #102033;
+  }
+
+  .account-name-label {
+    margin-top: 14px;
+    margin-bottom: 6px;
+
+    font-family: "SF-pro", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    color: #9a9187;
+  }
+
+  .account-name {
+    font-family: "Cinzel", serif;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+
+    color: #102033;
+  }
+
+  .card-divider {
+    width: 100%;
+    height: 1px;
+
+    margin: 20px 0;
+
+    background: #550303;
+  }
+
+  .account-label {
+    margin-bottom: 7px;
+
+    font-family: SF-pro, sans-serif;
+    font-size: 0.62rem;
+
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    color: #9a9187;
+  }
+
+  .account-number {
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+
+    color: #102033;
+  }
+
+  /* =====================================================
+    THANK YOU
+  ====================================================== */
+
+  .thank-you {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 0 24px 100px;
+
+    text-align: center;
+  }
+
+  .closing-mark {
+    margin-bottom: 20px;
+
+    font-size: 0.7rem;
+
+    color: #8d2424;
+  }
+
+  .thank-you h2 {
+    margin: 0 0 16px;
+
+    font-family: cinzel, serif;
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    font-weight: 400;
+    line-height: 1.25;
+
+    color: #102033;
+  }
+
+  .thank-you p {
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+    font-size: 0.78rem;
+
+    color: #94887d;
+  }
+
+  /* =====================================================
+    TABLET
+  ====================================================== */
+
+  @media (max-width: 850px) {
+    .registry-list {
+      grid-template-columns: 1fr;
+      max-width: 600px;
+    }
+
+    .registry-card {
+      min-height: auto;
+    }
+  }
+
+  /* =====================================================
+    MOBILE
+  ====================================================== */
+
+  @media (max-width: 600px) {
+    .page-hero {
+      padding: 120px 20px 55px;
+    }
+
+    .page-eyebrow {
+      margin-bottom: 17px;
+    }
+
+    .page-title {
+      font-size: clamp(2.6rem, 12vw, 3.7rem);
+    }
+
+    .page-subtitle {
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+
+    .registry-feature-section {
+      padding: 0 17px 75px;
+    }
+
+    .feature-inner {
+      padding: 55px 24px;
+    }
+
+    .feature-inner h2 {
+      font-size: 2.25rem;
+    }
+
+    .feature-inner p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+
+    .registry-monogram {
+      width: 330px;
+    }
+
+    .registry-logo {
+      opacity: 0.4;
+    }
+
+    .registry-cta {
+      width: 100%;
+      max-width: 290px;
+      padding: 15px 18px;
+    }
+
+    .cash-section {
+      padding: 0 17px 75px;
+    }
+
+    .section-heading {
+      margin-bottom: 30px;
+    }
+
+    .section-heading h2 {
+      font-size: 1.9rem;
+    }
+
+    .section-heading p {
+      max-width: 300px;
+      line-height: 1.6;
+    }
+
+    .registry-list {
+      gap: 14px;
+    }
+
+    .registry-card {
+      padding: 26px;
+    }
+
+    .thank-you {
+      padding: 0 20px 75px;
+    }
+  }

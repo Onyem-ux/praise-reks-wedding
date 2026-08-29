@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 
 interface RegistryEntry {
 label: string;
@@ -104,8 +105,6 @@ return ( <main className="page-shell"> <SiteNav />
 
         <a
           href="https://withjoy.com/praise-and-reks/registry"
-          target="_blank"
-          rel="noopener noreferrer"
           className="registry-cta"
         >
           <span>View Our Gift Registry</span>
@@ -113,7 +112,7 @@ return ( <main className="page-shell"> <SiteNav />
         </a>
 
         <span className="external-note">
-          Opens our registry in a new tab
+          You'll be redirected to our registry
         </span>
       </div>
     </div>
@@ -214,6 +213,9 @@ return ( <main className="page-shell"> <SiteNav />
       Thank you for being part of the beginning of our forever.
     </p>
   </section>
+
+  <Footer />
+  
 </main>
 
 );
