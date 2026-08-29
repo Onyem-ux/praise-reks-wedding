@@ -603,7 +603,7 @@ export default function OurStoryPage() {
       <SiteNav />
 
       {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 h-1 bg-stone-200/60">
+      <div className="fixed top-[78] left-0 right-0 z-40 h-1 bg-stone-200/60">
         <div
           className="h-full bg-[#550303] transition-all duration-150 ease-out"
           style={{ width: `${progress * 100}%` }}
@@ -733,9 +733,9 @@ export default function OurStoryPage() {
       {/* Closing */}
       <section className="border-t border-stone-200/60 bg-white/50">
         <div className="mx-auto max-w-3xl px-6 py-16 text-left lg:px-8 lg:py-16">
-          <p className="cinzel text-2xl italic text-stone-900 sm:text-3xl">
+          <p className="cinzel font-weight-400 text-1xl text-stone-900 sm:text-3xl">
             "We found love in the ordinary, grace in the journey, and forever in each other. 
-            Now, with God at the centre, we begin the rest of our story.
+            Now, with God at the centre, we begin the rest of our story."
           </p>
           <p className="mt-8 text-sm uppercase tracking-[0.2em] text-[#550303]">
             October 24, 2026 · PR Fusion.

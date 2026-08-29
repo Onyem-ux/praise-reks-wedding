@@ -121,10 +121,6 @@ return ( <main className="gallery-page"> <SiteNav />
 
       <div className="gallery-heading">
 
-        <span className="gallery-eyebrow">
-          PRAISE & REKS / Gallery
-        </span>
-
         <h1 className="gallery-title">
           Our love, in pictures
         </h1>
@@ -136,6 +132,13 @@ return ( <main className="gallery-page"> <SiteNav />
         <p className="gallery-intro-copy">
           Welcome to our gallery. Let's take through the journey from how it started, and show you how it's going!
         </p>
+
+      <div className="gallery-header-image">
+  <img
+    src="/gallery/12(1).jpg"
+    alt="Praise and Reks"
+  />
+</div>
 
       </div>
 
@@ -263,6 +266,34 @@ return ( <main className="gallery-page"> <SiteNav />
       align-items: end;
     }
 
+    .gallery-header-image {
+  width: 100%;
+  max-width: 1100px;
+
+  height: 420px
+
+  margin: 70px auto 0;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 14px 35px
+    rgba(0, 0, 0, 0.12);
+}
+
+.gallery-header-image img {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  object-fit: cover;
+
+  object-position: center;
+}
+
 
     /* =====================================================
        LEFT HEADER
@@ -276,31 +307,6 @@ return ( <main className="gallery-page"> <SiteNav />
       align-items: flex-start;
     }
 
-    .gallery-eyebrow {
-      display: block;
-
-      margin-bottom: 22px;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Text",
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-
-      font-size: 0.72rem;
-
-      font-weight: 500;
-
-      letter-spacing: 0.3em;
-
-      text-transform: uppercase;
-
-      color: #550303;
-    }
-
     .gallery-title {
       margin: 0;
 
@@ -308,14 +314,14 @@ return ( <main className="gallery-page"> <SiteNav />
 
       font-size:
         clamp(
-          4.5rem,
-          8vw,
-          7rem
+          3rem,
+          7vw,
+          5.5rem
         );
 
       line-height: 0.9;
 
-      font-weight: 600;
+      font-weight: 200;
 
       letter-spacing: -0.035em;
 
@@ -509,14 +515,14 @@ return ( <main className="gallery-page"> <SiteNav />
 
       font-size:
         clamp(
-          2.5rem,
-          4.3vw,
-          4rem
+          2.0rem,
+          4.0vw,
+          2rem
         );
 
       line-height: 1.08;
 
-      font-weight: 600;
+      font-weight: 400;
 
       letter-spacing: -0.025em;
 

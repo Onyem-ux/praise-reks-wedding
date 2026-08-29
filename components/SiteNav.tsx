@@ -18,23 +18,43 @@ const SF_PRO =
  * sure that folder + page.tsx exist once you've
  * created it, or this link will 404 the same way
  * the old Squad casing mismatch did.
+ *
+ * IMPORTANT: the key here must exactly match the
+ * label string passed in via navLinks (e.g. from
+ * CurveGallery, which sends "Squad", not "The Squad").
+ * A mismatched key used to silently fall back to "/",
+ * which made that link appear "active" on the homepage.
  */
 const ROUTES: Record<string, string> = {
   Invitation: "/invitation",
   "Our Story": "/our-story",
-  "The Squad": "/squad",
+  Squad: "/squad",
   Gallery: "/love-gallery",
   Registry: "/registry",
 };
 
 export default function SiteNav({
-  navLinks = ["Invitation", "Our Story", "The Squad", "Gallery", "Registry"],
+  navLinks = ["Invitation", "Our Story", "Squad", "Gallery", "Registry"],
   logoSrc = "/PR Fusion Logo.png",
 }: SiteNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  const getRoute = (link: string) => ROUTES[link] || "/";
+  const getRoute = (link: string) => ROUTES[link] ?? "#";
+
+  /*
+   * A link is only ever "active" if it has a real,
+   * registered route AND that route matches the current
+   * path. No fallback to "/" — that was what caused an
+   * unmapped label (like a stray "Squad" vs "The Squad")
+   * to be treated as the homepage and light up on "/".
+   * This also means the homepage itself never matches any
+   * nav link, so on "/" only the logo represents "home" —
+   * no link shows as active.
+   */
+  const isActive = (link: string) =>
+    Boolean(ROUTES[link]) && pathname === ROUTES[link];
+
   const toggleMenu = () => setOpen((value) => !value);
 
   return (
@@ -55,7 +75,7 @@ export default function SiteNav({
               key={link}
               href={getRoute(link)}
               className={`site-nav-link ${
-                pathname === getRoute(link) ? "site-nav-link-active" : ""
+                isActive(link) ? "site-nav-link-active" : ""
               }`}
             >
               {link}
@@ -98,7 +118,7 @@ export default function SiteNav({
               key={link}
               href={getRoute(link)}
               className={`site-mobile-link ${
-                pathname === getRoute(link) ? "site-mobile-link-active" : ""
+                isActive(link) ? "site-mobile-link-active" : ""
               }`}
               onClick={() => setOpen(false)}
             >

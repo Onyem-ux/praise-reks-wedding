@@ -130,6 +130,8 @@ function SquadRow({ label, total, images }: SquadRowProps) {
               <img
                 src={images[index] || "/placeholder.jpg"}
                 alt={`${label} ${index + 1}`}
+                loading="lazy"
+                decoding="async"
               />
             </div>
           ))}
@@ -146,6 +148,7 @@ export default function CurveGallery({
     "/gallery-3.jpg",
     "/gallery-4.jpg",
     "/gallery-5.jpg",
+    "/gallery-6.jpg",
   ],
 
   /*
@@ -156,7 +159,7 @@ export default function CurveGallery({
   title = "PRAISE & REKs",
 
   radius = 1350,
-  panelHeight = 1080,
+  panelHeight = 1300,
 
   spinSeconds = 34,
 
@@ -166,7 +169,7 @@ export default function CurveGallery({
 
   gap = 6,
 
-  panelWidthScale = 0.97,
+  panelWidthScale = 0.75,
 
   edgeWidth = "70px",
   edgeBlur = 10,
@@ -179,6 +182,9 @@ export default function CurveGallery({
   const [muted, setMuted] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
+
+    const isMobile = useIsMobile();
+  const effectivePanelCount = isMobile ? 6 : panelCount;
 
   /*
    * Load fonts once.
@@ -247,7 +253,7 @@ export default function CurveGallery({
     };
   }, [introOpen]);
 
-  const angleStep = 360 / panelCount;
+  const angleStep = 360 /   effectivePanelCount;
 
   const availablePanelWidth =
     2 *
@@ -327,7 +333,7 @@ export default function CurveGallery({
     const audio = audioRef.current;
 
     if (audio) {
-      audio.volume = 0.55;
+      audio.volume = 0.25;
 
       audio.play().catch(() => {
         // Ignore autoplay errors.
@@ -343,6 +349,34 @@ export default function CurveGallery({
     audio.muted = !audio.muted;
     setMuted(audio.muted);
   };
+
+  /*
+   * Pause the music the instant the tab is hidden — switched
+   * away, minimized, or backgrounded — even though the tab
+   * and browser stay technically "open". Resume it when the
+   * user comes back, but only if they haven't muted it.
+   */
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const audio = audioRef.current;
+
+      if (!audio) return;
+
+      if (document.hidden) {
+        audio.pause();
+      } else if (introOpen && !muted) {
+        audio.play().catch(() => {
+          // Ignore autoplay errors.
+        });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [introOpen, muted]);
 
   return (
     <>
@@ -444,7 +478,7 @@ export default function CurveGallery({
               }}
             >
               {Array.from({
-                length: panelCount,
+                length: effectivePanelCount,
               }).map((_, index) => {
                 const src =
                   images[index % images.length];
@@ -655,7 +689,12 @@ export default function CurveGallery({
 
             <div className="site-section-copy">
               <p className="site-section-body">
-                The people standing with us on the day — the ones who have laughed with us, prayed with us, and walked with us along the way.  </p>
+                We’re surrounded by so many amazing 
+                friends and loved ones, each playing 
+                a special part in our journey. On our 
+                wedding day, we’re honoured to have a 
+                few of them standing by our side as 
+                part of our wedding train.  </p>
             </div>
           </div>
 
@@ -708,13 +747,16 @@ export default function CurveGallery({
         <div className="site-section-inner">
           <div className="wall-section-top">
             <h2 className="wall-title">
-              Our faces decorate this wall.
+              Our love, 
+              <br>
+              </br>in pictures
             </h2>
 
             <div className="wall-copy">
               <p className="wall-tagline">
-                The quiet frames, the loud laughter,
-                and all the light we found in between.
+                Welcome to our gallery. Let's take 
+                through the journey from how it 
+                started, and show you how it's going!
               </p>
 
               <Link
@@ -1850,7 +1892,7 @@ export default function CurveGallery({
 .squad-row-title {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: #1a1a1a;
@@ -1906,8 +1948,15 @@ export default function CurveGallery({
   will-change: transform;
 }
 
+/*
+ * Fixed portrait height — identical on every device.
+ * Width still flexes to fill the row (via the inline
+ * flex-basis set in SquadRow), but the height itself
+ * never changes with screen size, so the photos read as
+ * a consistent portrait strip everywhere.
+ */
 .squad-photo {
-  aspect-ratio: 3 / 4;
+  height: 480px;
   border-radius: 16px;
   overflow: hidden;
   background: #e2ded7;
@@ -1938,7 +1987,7 @@ export default function CurveGallery({
 
           margin-bottom: 36px;
 
-          padding-bottom: 28px;
+          padding-bottom: 20px;
 
           border-bottom:
             1px solid #550303;
@@ -1954,7 +2003,7 @@ export default function CurveGallery({
               4.2rem
             );
 
-          font-weight: 600;
+          font-weight: 500;
 
           line-height: 1.05;
 
@@ -1984,13 +2033,15 @@ export default function CurveGallery({
         .wall-tagline {
           font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
 
-          font-size: 0.92rem;
+          font-size: 1rem;
 
           line-height: 1.6;
 
-          color: #550303;
+          color: #4a4a4a;
 
           margin: 0 0 14px;
+
+          margin-bottom: 40px;
         }
 
         .wall-grid {
@@ -2188,6 +2239,18 @@ export default function CurveGallery({
   margin-top: 32px;
 }
 
+.cg-outer::before,
+.cg-outer::after {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.cg-music-toggle,
+.cg-invite-btn {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 
           /* =================================================
              MOBILE INTRO
@@ -2380,43 +2443,7 @@ export default function CurveGallery({
            * calculate procedural SVG noise.
            */
           .cg-grain {
-            inset: 0;
-
-            width: 100%;
-            height: 100%;
-
-            background-image:
-              radial-gradient(
-                rgba(255, 255, 255, 0.16) 0.7px,
-                transparent 0.8px
-              ),
-              radial-gradient(
-                rgba(0, 0, 0, 0.12) 0.7px,
-                transparent 0.8px
-              );
-
-            background-size:
-              5px 5px,
-              7px 7px;
-
-            background-position:
-              0 0,
-              2px 3px;
-
-            opacity: 0.13;
-
-            mix-blend-mode: overlay;
-
-            /*
-             * Explicitly disable the expensive animation.
-             */
-            animation: none;
-
-            /*
-             * Prevent this overlay from becoming an additional
-             * large compositing layer.
-             */
-            transform: none;
+            display: none
           }
 
 

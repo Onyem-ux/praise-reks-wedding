@@ -158,17 +158,19 @@ return ( <main className="page-shell"> <SiteNav />
 
   <header className="page-hero">
     <span className="page-eyebrow">
-      The Wedding Party
+      The squad
     </span>
 
     <h1 className="page-title">
-      Squad
+      Meet our squad
     </h1>
 
     <p className="page-subtitle">
-      The people standing with us on the day —
-      the ones who have laughed with us, prayed
-      with us, and walked with us along the way.
+      We’re surrounded by so many amazing friends 
+      and loved ones, each playing a special part in 
+      our journey. On our wedding day, we’re honoured 
+      to have a few of them standing by our side as 
+      part of our wedding train.
     </p>
   </header>
 
@@ -282,7 +284,7 @@ return ( <main className="page-shell"> <SiteNav />
 
       line-height: 1;
 
-      font-weight: 600;
+      font-weight: 400;
 
       letter-spacing: 0.02em;
 

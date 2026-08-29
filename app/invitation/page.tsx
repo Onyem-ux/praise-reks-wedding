@@ -31,20 +31,31 @@ return ( <main className="page-shell">
     }`}
   >
     <SiteNav />
+    
 
-    <section className="page-hero">
 
-      <span className="page-eyebrow">
-        You're Invited
+    {/* =====================================================
+        DECORATIVE CONTENT
+    ===================================================== */}
+
+    <section className="invitation-intro">
+
+      <div className="intro-line" />
+
+      <span className="intro-eyebrow">
+        Praise &amp; Reks
       </span>
 
-      <h1 className="page-title">
-        Invitation
-      </h1>
+      <h2 className="intro-title">
+        You're
+        <br />
+        invited!
+      </h2>
 
-      <p className="page-subtitle">
-        A day of love, laughter, family, and the beginning
-        of our forever.
+      <p className="intro-copy">
+        Join us as we gather with the people who mean the
+        most to us to celebrate love, friendship, family,
+        and the beautiful beginning of our forever.
       </p>
 
       <button
@@ -62,33 +73,6 @@ return ( <main className="page-shell">
         </span>
       </button>
 
-    </section>
-
-
-    {/* =====================================================
-        DECORATIVE CONTENT
-    ===================================================== */}
-
-    <section className="invitation-intro">
-
-      <div className="intro-line" />
-
-      <span className="intro-eyebrow">
-        Praise &amp; Reks
-      </span>
-
-      <h2 className="intro-title">
-        We would love to
-        <br />
-        celebrate with you.
-      </h2>
-
-      <p className="intro-copy">
-        Join us as we gather with the people who mean the
-        most to us to celebrate love, friendship, family,
-        and the beautiful beginning of our forever.
-      </p>
-
       <div className="intro-details">
 
         <div className="detail">
@@ -97,7 +81,7 @@ return ( <main className="page-shell">
           </span>
 
           <span className="detail-value">
-            24 October 2026
+            24th October, 2026
           </span>
         </div>
 
@@ -107,17 +91,18 @@ return ( <main className="page-shell">
           </span>
 
           <span className="detail-value">
-            10:00 AM
+            10:00 AM - 12:00 PM
           </span>
         </div>
 
         <div className="detail">
           <span className="detail-label">
-            The Celebration
+            The Venue
           </span>
 
           <span className="detail-value">
-            Abuja, Nigeria
+            The Brook Church, Asim Oko street, Off
+            Parliamentary Extension, Calabar.
           </span>
         </div>
 
@@ -231,102 +216,23 @@ return ( <main className="page-shell">
         transform 0.6s ease;
     }
 
-
-    /* =====================================================
-       HERO
-    ===================================================== */
-
-    .page-hero {
-      min-height: 78vh;
-
-      padding:
-        160px 24px 100px;
-
-      display: flex;
-
-      flex-direction: column;
-
-      align-items: center;
-
-      justify-content: center;
-
-      text-align: center;
-    }
-
-
-    .page-eyebrow {
-      font-family: "Cinzel", serif;
-
-      font-size: 0.72rem;
-
-      letter-spacing: 0.3em;
-
-      text-transform: uppercase;
-
-      color: #550303;
-
-      margin-bottom: 20px;
-    }
-
-
-    .page-title {
-      font-family: "Cinzel", serif;
-
-      font-size:
-        clamp(
-          3rem,
-          7vw,
-          5.8rem
-        );
-
-      font-weight: 600;
-
-      letter-spacing: 0.025em;
-
-      line-height: 1;
-
-      color: #1a1a1a;
-
-      margin: 0 0 24px;
-    }
-
-
-    .page-subtitle {
-      max-width: 520px;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Text",
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-
-      font-size: 1rem;
-
-      line-height: 1.8;
-
-      color: #4a4a4a;
-
-      margin: 0 0 34px;
-    }
-
-
     /* =====================================================
        CTA
     ===================================================== */
 
     .view-invitation-btn {
+    
       display: inline-flex;
 
       align-items: center;
       justify-content: center;
 
-      gap: 12px;
+      gap: 20px;
 
       padding:
         15px 28px;
+
+      margin-top: 40px;
 
       border:
         1px solid #550303;
@@ -840,6 +746,7 @@ return ( <main className="page-shell">
 
 
       .view-invitation-btn {
+      Margin-top: 32px
         padding:
           14px 24px;
 
