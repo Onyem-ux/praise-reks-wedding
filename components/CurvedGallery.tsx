@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SiteNav from "./SiteNav";
+import Footer from "@/components/Footer";
 
 interface CurveGalleryProps {
   images?: string[];
@@ -2755,6 +2756,9 @@ export default function CurveGallery({
           }
         }
       `}</style>
+
+      <Footer />
+      
     </>
   );
 }
