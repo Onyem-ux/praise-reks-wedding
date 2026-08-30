@@ -21,6 +21,9 @@ interface CurveGalleryProps {
   panelWidthScale?: number;
 
   edgeWidth?: string;
+  // NOTE: edgeBlur is kept for backward-compat with existing call sites,
+  // but is no longer applied — backdrop-filter blur was removed entirely
+  // (it was crashing constrained in-app WebViews like WhatsApp's browser).
   edgeBlur?: number;
 
   navLinks?: string[];
@@ -548,8 +551,6 @@ export default function CurveGallery({
                       }
                       decoding="async"
                     />
-
-                    <div className="cg-grain" />
                   </div>
                 );
               })}
@@ -1378,58 +1379,6 @@ export default function CurveGallery({
 
 
         /* =====================================================
-           GRAIN
-        ===================================================== */
-
-        .cg-grain {
-          position: absolute;
-
-          inset: -50%;
-
-          width: 200%;
-          height: 200%;
-
-          z-index: 2;
-
-          pointer-events: none;
-
-          background-image:
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.55'/%3E%3C/svg%3E");
-
-          background-size: 180px 180px;
-
-          opacity: 0.14;
-
-          mix-blend-mode: overlay;
-
-          animation:
-            cg-grain-move 0.22s steps(2) infinite;
-        }
-
-        @keyframes cg-grain-move {
-          0% {
-            transform: translate(0, 0);
-          }
-
-          25% {
-            transform: translate(-4%, 4%);
-          }
-
-          50% {
-            transform: translate(4%, -4%);
-          }
-
-          75% {
-            transform: translate(4%, 4%);
-          }
-
-          100% {
-            transform: translate(-4%, -4%);
-          }
-        }
-
-
-        /* =====================================================
            HERO CTA
         ===================================================== */
 
@@ -1462,10 +1411,6 @@ export default function CurveGallery({
 
           border:
             1px solid rgba(255, 255, 255, 0.75);
-
-          backdrop-filter: blur(6px);
-
-          -webkit-backdrop-filter: blur(6px);
 
           text-decoration: none;
 
@@ -1516,10 +1461,6 @@ export default function CurveGallery({
           background:
             rgba(20, 20, 20, 0.55);
 
-          backdrop-filter: blur(6px);
-
-          -webkit-backdrop-filter: blur(6px);
-
           font-size: 1.1rem;
 
           cursor: pointer;
@@ -1535,98 +1476,6 @@ export default function CurveGallery({
 
         .cg-music-toggle:hover {
           transform: scale(1.08);
-        }
-
-
-        /* =====================================================
-           EDGE VIGNETTE
-        ===================================================== */
-
-        .cg-outer::before,
-        .cg-outer::after {
-          content: "";
-
-          position: absolute;
-
-          top: 0;
-          bottom: 0;
-
-          width: ${edgeWidth};
-
-          z-index: 40;
-
-          pointer-events: none;
-
-          backdrop-filter:
-            blur(${edgeBlur}px);
-
-          -webkit-backdrop-filter:
-            blur(${edgeBlur}px);
-        }
-
-        .cg-outer::before {
-          left: 0;
-
-          background:
-            linear-gradient(
-              to right,
-              rgba(255, 255, 255, 0.85),
-              rgba(255, 255, 255, 0)
-            );
-
-          mask-image:
-            linear-gradient(
-              to right,
-              black,
-              transparent
-            );
-
-          -webkit-mask-image:
-            linear-gradient(
-              to right,
-              black,
-              transparent
-            );
-        }
-
-        .cg-outer::after {
-          right: 0;
-
-          background:
-            linear-gradient(
-              to left,
-              rgba(255, 255, 255, 0.85),
-              rgba(255, 255, 255, 0)
-            );
-
-          mask-image:
-            linear-gradient(
-              to left,
-              black,
-              transparent
-            );
-
-          -webkit-mask-image:
-            linear-gradient(
-              to left,
-              black,
-              transparent
-            );
-        }
-
-
-        /* =====================================================
-           ROTATION
-        ===================================================== */
-
-        @keyframes cg-spin {
-          from {
-            transform: rotateY(0deg);
-          }
-
-          to {
-            transform: rotateY(360deg);
-          }
         }
 
 
@@ -2368,18 +2217,6 @@ export default function CurveGallery({
   margin-top: 32px;
 }
 
-.cg-outer::before,
-.cg-outer::after {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.cg-music-toggle,
-.cg-invite-btn {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
 
           /* =================================================
              MOBILE INTRO
@@ -2562,25 +2399,6 @@ export default function CurveGallery({
              * Avoid unnecessary filtering/resampling work.
              */
             backface-visibility: hidden;
-          }
-
-
-          /* =================================================
-             MOBILE GRAIN
-          ================================================= */
-
-          /*
-           * IMPORTANT:
-           *
-           * Do not run feTurbulence animation on mobile.
-           *
-           * Instead we use a small static raster-like
-           * repeating texture. This keeps the visual grain
-           * without forcing the browser to continuously
-           * calculate procedural SVG noise.
-           */
-          .cg-grain {
-            display: none
           }
 
 
@@ -2890,8 +2708,7 @@ export default function CurveGallery({
         ===================================================== */
 
         @media (prefers-reduced-motion: reduce) {
-          .cg-cylinder,
-          .cg-grain {
+          .cg-cylinder {
             animation: none !important;
           }
 
