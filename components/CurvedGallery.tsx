@@ -1346,6 +1346,17 @@ export default function CurveGallery({
           transform-origin: center center;
         }
 
+        /* ADD THIS */
+@keyframes cg-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
         .cg-panel {
           position: absolute;
 
