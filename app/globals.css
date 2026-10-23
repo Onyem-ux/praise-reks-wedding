@@ -596,3 +596,124 @@
       padding: 0 20px 75px;
     }
   }
+
+  
+/* ===== DELIVERY ADDRESS MODAL =====
+   The modal reuses your existing classes, so these are only the extras.
+   Everything is scoped to .modal-card so the rest of the page is untouched. */
+
+button.registry-cta {
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* --- Heading block: tighter spacing --- */
+.modal-card .section-heading {
+  margin: 0;
+  padding: 0;
+}
+
+.modal-card .section-heading h2 {
+  margin: 0 0 8px;
+}
+
+.modal-card .section-heading p {
+  margin: 0;
+}
+
+.modal-card .card-divider {
+  margin: 16px 0;
+}
+
+/* --- Fields --- */
+.modal-field {
+  margin-bottom: 16px;
+}
+
+/* --- Address row + copy button --- */
+.modal-card .account-number-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modal-card .account-number-row .account-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-card .copy-button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.modal-card .copy-button:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: currentColor;
+}
+
+.modal-card .copy-button:active {
+  transform: scale(0.96);
+}
+
+.modal-card .copy-button.copied {
+  border-color: currentColor;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* --- Note + generous space before the CTA --- */
+.modal-card .external-note {
+  display: block;
+  margin: 0 0 32px;
+}
+
+/* --- Done button --- */
+.modal-card .modal-done {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Clear disabled state (specific selector so it beats .registry-cta) */
+.modal-card .registry-cta.modal-done:disabled {
+  opacity: 0.45;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
+/* --- Close button --- */
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.modal-close:hover {
+  opacity: 1;
+}
