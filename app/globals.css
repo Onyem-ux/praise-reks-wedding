@@ -22,7 +22,7 @@
       url("/White embross bg.jpg");
     background-size: cover;
     background-position: center;
-    color: #550303;
+    color: #550303; 
     font-family: "Cinzel", serif;
   }
 
@@ -596,48 +596,6 @@
       padding: 0 20px 75px;
     }
   }
-
-  
-/* ===== DELIVERY ADDRESS MODAL =====
-   The modal reuses your existing classes, so these are only the extras.
-   Everything is scoped to .modal-card so the rest of the page is untouched. */
-
-button.registry-cta {
-  border: none;
-  cursor: pointer;
-  font: inherit;
-}
-
-/* --- Heading block: tighter spacing --- */
-.modal-card .section-heading {
-  margin: 0;
-  padding: 0;
-}
-
-.modal-card .section-heading h2 {
-  margin: 0 0 8px;
-}
-
-.modal-card .section-heading p {
-  margin: 0;
-}
-
-.modal-card .card-divider {
-  margin: 16px 0;
-}
-
-/* --- Fields --- */
-.modal-field {
-  margin-bottom: 16px;
-}
-
-/* --- Address row + copy button --- */
-.modal-card .account-number-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
 
 .modal-card .account-number-row .account-name {
   flex: 1;
